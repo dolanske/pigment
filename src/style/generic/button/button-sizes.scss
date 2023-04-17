@@ -1,0 +1,22 @@
+.button {
+  &.btn-100 {
+    width: 100%;
+  }
+
+  &.btn-wider {
+    padding: 0 20px;
+  }
+
+  &.btn-small {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 10px;
+  }
+
+  &.btn-icon {
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    @include flex(0, center, center);
+  }
+}
