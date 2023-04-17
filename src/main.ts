@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import './style/index.scss'
-import App from './App.vue'
 import { createPinia } from 'pinia'
+import App from './App.vue'
 
 /**
  * This is the main application entry point.

@@ -5,11 +5,13 @@ Generic dropdown styling, allowing you to al
 .dropdown {
   border-radius: var(--radius-sm);
   background-color: var(--color-bg);
-  padding: 10px 0;
+  padding: 5px 0;
   z-index: 1000;
   width: 176px;
   box-shadow: var(--shadow2);
   position: absolute;
+  left: 0;
+  top: calc(100% + 5px);
   border: 1px solid var(--color-border-light);
 
   a {
@@ -22,8 +24,11 @@ Generic dropdown styling, allowing you to al
     justify-content: flex-start;
     gap: 16px;
     padding: 0 16px;
+    width: 100%;
+    color: var(--color-text-light);
 
     &:hover {
+      color: var(--color-text);
       background-color: var(--color-bg-light-hover);
     }
 
@@ -32,6 +37,13 @@ Generic dropdown styling, allowing you to al
       text-align: center;
       color: var(--color-accent);
     }
+  }
+
+  hr {
+    width: 100%;
+    // border: none;
+    border-color: var(--color-border);
+    margin: 5px 0;
   }
 }
 
