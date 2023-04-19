@@ -32,23 +32,21 @@ const canvas = useCanvas()
 
     <div class="nav-dropdowns">
       <WithDropdown>
-        <template #default="{ toggle, open }">
+        <template #header="{ toggle, open }">
           <button class="button btn-white" :class="{ 'btn-gray': open }" @click="toggle">
             File
           </button>
         </template>
-        <template #list>
-          <button class="button" @click="file.upload()">
-            New File
-          </button>
-          <button class="button">
-            Revert
-          </button>
-          <hr>
-          <button class="button">
-            Export
-          </button>
-        </template>
+        <button class="button" @click="file.upload()">
+          New File
+        </button>
+        <button class="button">
+          Revert
+        </button>
+        <hr>
+        <button class="button">
+          Export
+        </button>
       </WithDropdown>
       <button class="button btn-white">
         EDIT
@@ -64,123 +62,72 @@ const canvas = useCanvas()
     <div class="divider" />
 
     <div class="fn-dropdowns">
-      <WithDropdown>
-        <template #default="{ toggle, open }">
-          <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Saturation" @click="toggle">
-            <IconWaterCircle />
-          </button>
-        </template>
-        <template #list>
-          <input
-            v-model="effects.state.saturate.value"
-            type="range"
-            :min="effects.state.saturate.min"
-            :max="effects.state.saturate.max"
-          >
-          {{ effects.state.saturate.value / 100 }}
-        </template>
+      <WithDropdown title="Saturation" :icon="IconWaterCircle">
+        <input
+          v-model="effects.state.saturate.value"
+          type="range"
+          :min="effects.state.saturate.min"
+          :max="effects.state.saturate.max"
+        >
+      </WithDropdown>
+
+      <WithDropdown title="Contrast" :icon="IconCircleHalfFull">
+        <input
+          v-model="effects.state.contrast.value"
+          type="range"
+          :min="effects.state.contrast.min"
+          :max="effects.state.contrast.max"
+        >
+      </WithDropdown>
+
+      <WithDropdown title="Brightness" :icon="IconWhiteBalanceSunny">
+        <input
+          v-model="effects.state.brightness.value"
+          type="range"
+          :min="effects.state.brightness.min"
+          :max="effects.state.brightness.max"
+        >
+      </WithDropdown>
+
+      <WithDropdown title="Grayscale" :icon="IconGradientHorizontal">
+        <input
+          v-model="effects.state.grayscale.value"
+          type="range"
+          :min="effects.state.grayscale.min"
+          :max="effects.state.grayscale.max"
+        >
+      </WithDropdown>
+
+      <WithDropdown title="Hue" :icon="IconRotateLeft">
+        <input
+          v-model="effects.state['hue-rotate'].value"
+          type="range"
+          :min="effects.state['hue-rotate'].min"
+          :max="effects.state['hue-rotate'].max"
+        >
       </WithDropdown>
 
       <WithDropdown>
-        <template #default="{ toggle, open }">
-          <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Contrast" @click="toggle">
-            <IconCircleHalfFull />
-          </button>
-        </template>
-        <template #list>
-          <input
-            v-model="effects.state.contrast.value"
-            type="range"
-            :min="effects.state.contrast.min"
-            :max="effects.state.contrast.max"
-          >
-          {{ effects.state.contrast.value / 100 }}
-        </template>
-      </WithDropdown>
-
-      <WithDropdown>
-        <template #default="{ toggle, open }">
-          <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Brightness" @click="toggle">
-            <IconWhiteBalanceSunny />
-          </button>
-        </template>
-        <template #list>
-          <input
-            v-model="effects.state.brightness.value"
-            type="range"
-            :min="effects.state.brightness.min"
-            :max="effects.state.brightness.max"
-          >
-          {{ effects.state.brightness.value / 100 }}
-        </template>
-      </WithDropdown>
-
-      <WithDropdown>
-        <template #default="{ toggle, open }">
-          <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Grayscale" @click="toggle">
-            <IconGradientHorizontal />
-          </button>
-        </template>
-        <template #list>
-          <input
-            v-model="effects.state.grayscale.value"
-            type="range"
-            :min="effects.state.grayscale.min"
-            :max="effects.state.grayscale.max"
-          >
-          {{ effects.state.grayscale.value / 100 }}
-        </template>
-      </WithDropdown>
-
-      <WithDropdown>
-        <template #default="{ toggle, open }">
-          <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Hue Rotate" @click="toggle">
-            <IconRotateLeft />
-          </button>
-        </template>
-        <template #list>
-          <input
-            v-model="effects.state['hue-rotate'].value"
-            type="range"
-            :min="effects.state['hue-rotate'].min"
-            :max="effects.state['hue-rotate'].max"
-          >
-          {{ effects.state['hue-rotate'].value / 100 }}
-        </template>
-      </WithDropdown>
-
-      <WithDropdown>
-        <template #default="{ toggle, open }">
+        <template #header="{ toggle, open }">
           <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Invert" @click="toggle">
             <IconInvertColors />
           </button>
         </template>
-        <template #list>
-          <input
-            v-model="effects.state.invert.value"
-            type="range"
-            :min="effects.state.invert.min"
-            :max="effects.state.invert.max"
-          >
-          {{ effects.state.invert.value / 100 }}
-        </template>
+        <input
+          v-model="effects.state.invert.value"
+          type="range"
+          :min="effects.state.invert.min"
+          :max="effects.state.invert.max"
+        >
       </WithDropdown>
 
-      <WithDropdown>
-        <template #default="{ toggle, open }">
-          <button class="button btn-white btn-icon" :class="{ 'btn-gray': open }" data-title-bottom="Seipa" @click="toggle">
-            <IconImageFilterVintage />
-          </button>
-        </template>
-        <template #list>
-          <input
-            v-model="effects.state.seipa.value"
-            type="range"
-            :min="effects.state.seipa.min"
-            :max="effects.state.seipa.max"
-          >
-          {{ effects.state.seipa.value / 100 }}
-        </template>
+      <WithDropdown title="Sepia" :icon="IconImageFilterVintage">
+        <input
+          v-model="effects.state.seipa.value"
+          type="range"
+          :min="effects.state.seipa.min"
+          :max="effects.state.seipa.max"
+        >
       </WithDropdown>
     </div>
 
