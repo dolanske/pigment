@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
+import { LOAD } from '../js/definitions'
 import { useToast } from './toast'
 import { getCanvasContext } from './canvas'
+import { useLoading } from './loading'
 
 /**
  * Triggers an input element to upload an image and returns the image url
  */
 function sendErrorMessage(event: ErrorEvent) {
-  console.log(event)
-
+  console.log('Error when uploading, event')
   const toast = useToast()
   toast.push({
     type: 'error',
@@ -64,7 +65,20 @@ export const useFile = defineStore('file', () => {
   })
 
   async function upload() {
-    img.value = await triggerUpload()
+    const { add, del } = useLoading()
+    add(LOAD.upload)
+    triggerUpload()
+      .then((res) => {
+        img.value = res
+        draw()
+      })
+      .finally(() => {
+        del(LOAD.upload)
+      })
+  }
+
+  async function update(image: HTMLImageElement) {
+    img.value = image
     draw()
   }
 
@@ -76,6 +90,7 @@ export const useFile = defineStore('file', () => {
     const { width, height } = defaultScale()
     Object.assign(currentScale, { width, height })
 
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.drawImage(
       img.value,
       (ctx.canvas.width / 2) - (width / 2),
@@ -119,6 +134,7 @@ export const useFile = defineStore('file', () => {
 
   return {
     upload,
+    update,
     draw,
     scale,
     img,

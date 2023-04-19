@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
-import { useFile } from './file'
 
 // Query and return canvas context
 export function getCanvasContext(id = '#canvas') {
@@ -9,7 +8,7 @@ export function getCanvasContext(id = '#canvas') {
 }
 
 export const useCanvas = defineStore('canvas', () => {
-  const file = useFile()
+  // const file = useFile()
 
   const scale = ref(1)
   const cfg = reactive({

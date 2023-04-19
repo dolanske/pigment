@@ -1,5 +1,17 @@
 .canvas-wrapper {
+  position: relative;
+  z-index: 1;
+
+  &.is-dragging {
+    canvas {
+      background-color: var(--color-bg-light);
+      opacity: 0.5;
+      pointer-events: none !important;
+    }
+  }
+
   canvas {
     background-color: var(--color-bg);
+    z-index: 1;
   }
 }
