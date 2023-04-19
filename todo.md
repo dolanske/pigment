@@ -17,6 +17,8 @@
 
 ## Bugs
 
+- [] Image dragged in takes full size instead of being calculated correctly (smaller images tha canvas should not get up-sized)
+
 ---
 
 ## Done
