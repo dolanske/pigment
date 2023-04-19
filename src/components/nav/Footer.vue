@@ -1,10 +1,13 @@
 <script setup lang='ts'>
 import { computed, ref } from 'vue'
 import { whenever } from '@vueuse/shared'
+import { useMouse } from '@vueuse/core'
 import { useFile } from '../../store/file'
 import { formatFileSize } from '../../js/format'
+import { useCanvas } from '../../store/canvas'
 
 const file = useFile()
+const canvas = useCanvas()
 
 const extension = ref('')
 const size = ref(0)
@@ -20,32 +23,34 @@ whenever(() => file.img, async (img) => {
 
 const width = computed(() => file?.img?.naturalWidth ?? 0)
 const height = computed(() => file?.img?.naturalHeight ?? 0)
+
+const { x, y } = useMouse()
+const formattedY = computed(() => Math.min(window.innerHeight - (canvas.cfg.offsetBottom + canvas.cfg.offsetTop), Math.max(0, y.value - canvas.cfg.offsetTop)))
 </script>
 
 <template>
-  <footer class="footer">
+  <footer class="footer" :style="{ height: `${canvas.cfg.offsetBottom}px` }">
     <p>
-      <strong>X:35</strong>
+      <strong>X:{{ x }}</strong>
       &nbsp;
-      <strong>Y:512</strong>
+      <strong>Y:{{ formattedY }}</strong>
     </p>
 
     <div class="flex-1" />
 
-    <strong>{{ extension }}</strong>
-    <p>
-      Original
-      <strong>{{ width }}</strong>x<strong>{{ height }}</strong>
-    </p>
-
-    <!-- <p>
-      Modified
-      <strong>1250</strong>x<strong>1250</strong>
-    </p> -->
-
-    <p>
-      File
-      <strong>{{ formatFileSize(size, true) }}</strong>
+    <template v-if="file.img">
+      <strong>{{ extension }}</strong>
+      <p>
+        Original
+        <strong>{{ width }}</strong>x<strong>{{ height }}</strong>
+      </p>
+      <p>
+        File
+        <strong>{{ formatFileSize(size, true) }}</strong>
+      </p>
+    </template>
+    <p v-else>
+      No file available
     </p>
   </footer>
 </template>

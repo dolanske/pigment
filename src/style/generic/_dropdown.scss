@@ -11,7 +11,7 @@ Generic dropdown styling, allowing you to al
   box-shadow: var(--shadow2);
   position: absolute;
   left: 0;
-  top: calc(100% + 5px);
+  top: calc(100% + 10px);
   border: 1px solid var(--color-border-light);
 
   a {
@@ -20,8 +20,10 @@ Generic dropdown styling, allowing you to al
 
   a,
   .button {
+    // @include font(400);
     border-radius: 0 !important;
     justify-content: flex-start;
+    font-weight: 400 !important;
     gap: 16px;
     padding: 0 16px;
     width: 100%;

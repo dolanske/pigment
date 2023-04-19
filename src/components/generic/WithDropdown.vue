@@ -14,7 +14,7 @@ onClickOutside(wrap, () => open.value = false)
 
 <template>
   <div ref="wrap" class="dropdown-wrap">
-    <slot :toggle="toggle" />
+    <slot :toggle="toggle" :open="open" />
     <div v-if="open" class="dropdown">
       <slot name="list" />
     </div>

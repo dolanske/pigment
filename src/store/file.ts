@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useToast } from './toast'
+import { getCanvasContext, useCanvas } from './canvas'
 
 /**
  * Triggers an input element to upload an image and returns the image url
@@ -51,12 +52,6 @@ export function triggerUpload(): Promise<HTMLImageElement> {
   })
 }
 
-// Query and return canvas context
-export function getCanvasContext(id = '#canvas') {
-  const canvas = document.querySelector<HTMLCanvasElement>(id)
-  return canvas?.getContext('2d') ?? null
-}
-
 /**
  * Store module used to store information about file.
  */
@@ -65,26 +60,40 @@ export const useFile = defineStore('file', () => {
   const img = ref<HTMLImageElement>()
 
   async function upload() {
-    const _img = await triggerUpload()
+    img.value = await triggerUpload()
+    draw()
+  }
+
+  function draw() {
     const ctx = getCanvasContext()
+    if (!ctx || !img.value)
+      return
 
-    if (ctx) {
-      const { naturalWidth, naturalHeight } = _img
+    const { naturalWidth, naturalHeight } = img.value
 
-      ctx.drawImage(
-        _img,
-        (ctx.canvas.width / 2) - (naturalWidth / 2),
-        (ctx.canvas.height / 2) - (naturalHeight / 2),
-        naturalWidth,
-        naturalHeight,
-      )
+    ctx.drawImage(
+      img.value,
+      (ctx.canvas.width / 2) - (naturalWidth / 2),
+      (ctx.canvas.height / 2) - (naturalHeight / 2),
+      naturalWidth,
+      naturalHeight,
+    )
+  }
 
-      img.value = _img
-    }
+  function scale(by: number) {
+    const canvas = useCanvas()
+    const ctx = getCanvasContext()
+    if (!ctx)
+      return
+
+    ctx.scale(canvas.scale, canvas.scale)
+    draw()
   }
 
   return {
     upload,
+    draw,
+    scale,
     img,
   }
 })
