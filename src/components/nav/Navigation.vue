@@ -45,7 +45,10 @@ const canvas = useCanvas()
         </button>
         <hr>
         <button class="button" @click="file.export()">
-          Export
+          Save
+        </button>
+        <button class="button" @click="file.export()">
+          Save As
         </button>
       </WithDropdown>
       <button class="button btn-white">
@@ -123,10 +126,10 @@ const canvas = useCanvas()
 
       <WithDropdown title="Sepia" :icon="IconImageFilterVintage">
         <input
-          v-model="effects.state.seipa.value"
+          v-model="effects.state.sepia.value"
           type="range"
-          :min="effects.state.seipa.min"
-          :max="effects.state.seipa.max"
+          :min="effects.state.sepia.min"
+          :max="effects.state.sepia.max"
         >
       </WithDropdown>
     </div>

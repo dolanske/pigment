@@ -1,14 +1,24 @@
 import { defineStore } from 'pinia'
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { getCanvasContext } from './canvas'
 import { useFile } from './file'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter#examples
 
+const effectDefaults: Record<string, number> = {
+  'saturate': 100,
+  'contrast': 100,
+  'brightness': 100,
+  'grayscale': 0,
+  'hue-rotate': 0,
+  'invert': 0,
+  'sepia': 0,
+}
+
 // General storage of editor effects, their defaults and current state
 export const useEffects = defineStore('effects', () => {
   const file = useFile()
-  const state = reactive({
+  const state = reactive<Record<keyof typeof effectDefaults, any>>({
     'saturate': {
       value: 100,
       min: 0,
@@ -57,7 +67,7 @@ export const useEffects = defineStore('effects', () => {
         return `invert(${amount / 100})`
       },
     },
-    'seipa': {
+    'sepia': {
       value: 0,
       min: 0,
       max: 100,
@@ -67,13 +77,28 @@ export const useEffects = defineStore('effects', () => {
     },
   })
 
-  watch(state, applyEffects, { deep: true })
+  const resetting = ref(false)
+
+  function reset() {
+    resetting.value = true
+    for (const key of Object.keys(state))
+      state[key].value = effectDefaults[key]
+    resetting.value = false
+  }
+
+  watch(state, () => {
+    if (resetting.value)
+      return
+
+    applyEffects()
+  }, { deep: true })
 
   function collectEffects() {
     return Object.values(state).map((item) => {
       return item.run(item.value)
     }).join(' ')
   }
+
   // @internal
   function applyEffects() {
     const ctx = getCanvasContext()
@@ -89,6 +114,7 @@ export const useEffects = defineStore('effects', () => {
 
   return {
     state,
+    reset,
     collectEffects,
   }
 })

@@ -2,16 +2,16 @@
 
 ## Implementation
 
-- [] Option to compare original picture with current picture
+- [Canvas] [] Option to compare original picture with current picture
   - Side by side
   - With a slider between
-
-- [] Option to remove background color
-
+- [Effects] [] Option to remove background color
 - [Effects] [] Add image sharpening
 - [Effects] [] Add noise
   - [] Amount of noise
   - [] BW or colored
+- [Shortcuts] [] Copy implementation of keyboard shortcuts from orbit
+  - Display keyboard shorcuts in buttons/tooltips for buttons
 
 ## Components
 

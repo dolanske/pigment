@@ -124,7 +124,7 @@ export const useFile = defineStore('file', () => {
     const { naturalHeight, naturalWidth } = image
     // Create offset, which is a sum of the desired opposite vertical or
     // horizontal gaps at end of canvas
-    const OFFSET = 80
+    const OFFSET = 40
     // The min result of vertical and horizontal scale ratio
     const factor = Math.min(ctx.canvas.width / naturalWidth, ctx.canvas.height / naturalHeight)
     // Scale the image and return the new width and height
@@ -149,7 +149,23 @@ export const useFile = defineStore('file', () => {
    * any user made changes
    */
   function revert() {
+    const ctx = getCanvasContext()
+    if (!ctx || !img.value)
+      return
 
+    // Reset any changes made and re-append image
+    const effects = useEffects()
+    effects.reset()
+
+    const { width, height } = defaultScale()
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    ctx.drawImage(
+      img.value,
+      (ctx.canvas.width / 2) - (width / 2),
+      (ctx.canvas.height / 2) - (height / 2),
+      width,
+      height,
+    )
   }
 
   /**
