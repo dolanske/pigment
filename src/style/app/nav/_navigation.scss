@@ -1,10 +1,14 @@
 .navigation {
-  @include flex(20px);
+  @include flex(10px);
   width: 100%;
   // Height is set by the canvas configuration
   // height: 50px;
   border-bottom: 1px solid var(--color-border);
   padding: 0 var(--padding);
+
+  .nav-logo {
+    margin-right: 10px;
+  }
 
   .nav-dropdowns {
     @include flex(10px);

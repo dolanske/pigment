@@ -8,11 +8,9 @@ export function getCanvasContext(id = '#canvas') {
 }
 
 export const useCanvas = defineStore('canvas', () => {
-  // const file = useFile()
-
   const scale = ref(1)
   const cfg = reactive({
-    offsetTop: 40,
+    offsetTop: 45,
     offsetBottom: 25,
   })
 
@@ -20,10 +18,6 @@ export const useCanvas = defineStore('canvas', () => {
     x: 0,
     y: 0,
   })
-
-  // watch(scale, (value) => {
-
-  // })
 
   return {
     cfg,

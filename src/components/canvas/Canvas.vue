@@ -39,6 +39,7 @@ useEventListener('resize', async () => {
   setCanvasSizeToDocSize()
   await nextTick()
   file.draw()
+  // effects.applyEffects()
 }, { passive: true })
 
 function setCanvasSizeToDocSize() {

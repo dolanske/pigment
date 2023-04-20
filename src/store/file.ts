@@ -4,6 +4,7 @@ import { LOAD } from '../js/definitions'
 import { useToast } from './toast'
 import { getCanvasContext } from './canvas'
 import { useLoading } from './loading'
+import { useEffects } from './effects'
 
 /**
  * Triggers an input element to upload an image and returns the image url
@@ -18,8 +19,8 @@ function sendErrorMessage(event: ErrorEvent) {
 }
 
 export function triggerUpload(): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const inputEl = document.createElement('input')
+  const inputEl = document.createElement('input')
+  const handler = new Promise<HTMLImageElement>((resolve, reject) => {
     inputEl.setAttribute('accept', 'image/*')
     inputEl.setAttribute('type', 'file')
     inputEl.click()
@@ -51,6 +52,12 @@ export function triggerUpload(): Promise<HTMLImageElement> {
       return reject(new Error('Failed to upload image'))
     })
   })
+
+  handler.finally(() => {
+    inputEl.remove()
+  })
+
+  return handler
 }
 
 /**
@@ -63,6 +70,7 @@ export const useFile = defineStore('file', () => {
     width: 0,
     height: 0,
   })
+  const crop = reactive({ left: 0, top: 0, right: 0, bottom: 0 })
 
   async function upload() {
     const { add, del } = useLoading()
@@ -87,8 +95,12 @@ export const useFile = defineStore('file', () => {
     if (!ctx || !img.value)
       return
 
+    const effects = useEffects()
     const { width, height } = defaultScale()
+
     Object.assign(currentScale, { width, height })
+    const filters = effects.collectEffects()
+    ctx.filter = filters
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.drawImage(
@@ -132,9 +144,94 @@ export const useFile = defineStore('file', () => {
     // draw()
   }
 
+  /**
+   * This will load the original image back onto the canvas. Discarding
+   * any user made changes
+   */
+  function revert() {
+
+  }
+
+  /**
+   * Triggers a file download. Because canvas is full screen but image
+   * is not, we need to iterate over canvas pixels and get the bounds.
+   * Then when using `getImageData()` we use these bounds to _only_
+   * export the actual image instead of the entire canvsa context.
+   *
+   * Checking for bounds to only export image and not all canvas bounds
+   * [https://ourcodeworld.com/articles/read/683/how-to-remove-the-transparent-pixels-that-surrounds-a-canvas-in-javascript]
+   *
+   * TODO:
+   * Once zooming in is supported, it should first fit image into canvas
+   *
+   */
+  function exportFile() {
+    const ctx = getCanvasContext()
+    if (!ctx || !img.value)
+      return
+
+    const { add, del } = useLoading()
+    add(LOAD.export)
+
+    // Exporting
+    // Define bounds
+    const bounds: Record<string, any> = { top: null, left: null, right: null, bottom: null }
+    const pixels = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
+    let x: number
+    let y: number
+
+    // Iterate over pixels and define its bounds
+    for (let i = 0; i < pixels.data.length; i += 4) {
+      if (pixels.data[i + 3] !== 0) {
+        x = (i / 4) % ctx.canvas.width
+        y = ~~((i / 4) / ctx.canvas.width)
+
+        if (bounds.top === null)
+          bounds.top = y
+
+        if (bounds.left === null)
+          bounds.left = x
+        else if (x < bounds.left)
+          bounds.left = x
+
+        if (bounds.right === null)
+          bounds.right = x
+        else if (bounds.right < x)
+          bounds.right = x
+
+        if (bounds.bottom === null)
+          bounds.bottom = y
+        else if (bounds.bottom < y)
+          bounds.bottom = y
+      }
+    }
+
+    const trimHeight = bounds.bottom - bounds.top
+    const trimWidth = bounds.right - bounds.left
+    const trimmed = ctx.getImageData(bounds.left, bounds.top, trimWidth, trimHeight)
+
+    const tempCanvas = document.createElement('canvas')
+    tempCanvas.width = trimWidth
+    tempCanvas.height = trimHeight
+    const tempCtx = tempCanvas.getContext('2d')
+    if (!tempCtx)
+      return
+
+    tempCtx?.putImageData(trimmed, 0, 0)
+
+    const a = document.createElement('a')
+    a.href = tempCanvas.toDataURL('image/png')
+    a.download = img.value.src.replace(/^.*[\\\/]/, '')
+    a.click()
+    a.remove()
+    del(LOAD.export)
+  }
+
   return {
     upload,
     update,
+    export: exportFile,
+    revert,
     draw,
     scale,
     img,

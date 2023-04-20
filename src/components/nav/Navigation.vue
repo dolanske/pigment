@@ -40,11 +40,11 @@ const canvas = useCanvas()
         <button class="button" @click="file.upload()">
           New File
         </button>
-        <button class="button">
+        <button class="button" @click="file.revert()">
           Revert
         </button>
         <hr>
-        <button class="button">
+        <button class="button" @click="file.export()">
           Export
         </button>
       </WithDropdown>

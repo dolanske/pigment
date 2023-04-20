@@ -67,24 +67,28 @@ export const useEffects = defineStore('effects', () => {
     },
   })
 
-  watch(state, () => {
+  watch(state, applyEffects, { deep: true })
+
+  function collectEffects() {
+    return Object.values(state).map((item) => {
+      return item.run(item.value)
+    }).join(' ')
+  }
+  // @internal
+  function applyEffects() {
     const ctx = getCanvasContext()
     if (!ctx)
       return
 
-    const filterString = Object.values(state).map((item) => {
-      return item.run(item.value)
-    }).join(' ')
-
+    const filterString = collectEffects()
     // Set filter
-    console.log(filterString)
     ctx.filter = filterString
     // In order to apply filter to canvas we need to re-draw the it
-
     file.draw()
-  }, { deep: true })
+  }
 
   return {
     state,
+    collectEffects,
   }
 })
