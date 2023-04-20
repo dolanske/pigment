@@ -17,7 +17,6 @@
 - [Effects>Transform] [] Flip Horizontall / flip vertically
 - [Effects>Transform] [] Rotate (degrees) and +/- 90 degree buttons
 
- 
 ## Components
 
 - [Modal] [] Clicking 'Export' will open up a modal showing a preview of the image, option to rename, scale and select export format
@@ -28,6 +27,7 @@
     - [] Transform
     - [] Pixel Brightness based effects ()
     - [] Noise
+
 ## Bugs
 
 - [] Image dragged in takes full size instead of being calculated correctly (smaller images tha canvas should not get up-sized)
