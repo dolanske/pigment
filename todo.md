@@ -1,5 +1,7 @@
 # Todo
 
+- [Effects] [] Review if the order of applied effects has any different end results
+
 ## Implementation
 
 - [Canvas] [] Option to compare original picture with current picture
@@ -17,7 +19,11 @@
 
 - [Modal] [] Clicking 'Export' will open up a modal showing a preview of the image, option to rename, scale and select export format
   - [JPEG] allow setting a jpeg quality
-
+- [Navigation] [] Protoype sidebar where filters would live instead
+  - [] Keep the header but instead of each filter, there will be "tabs" for sidebar content
+    - [] Filters
+    - [] Transform
+    - [] Pixel Brightness based effects ()
 ## Bugs
 
 - [] Image dragged in takes full size instead of being calculated correctly (smaller images tha canvas should not get up-sized)

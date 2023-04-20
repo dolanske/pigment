@@ -41,7 +41,7 @@ const canvas = useCanvas()
           New File
         </button>
         <button class="button" @click="file.revert()">
-          Revert
+          Revert Changes
         </button>
         <hr>
         <button class="button" @click="file.export()">
