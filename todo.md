@@ -7,14 +7,17 @@
 - [Canvas] [] Option to compare original picture with current picture
   - Side by side
   - With a slider between
-- [Effects] [] Option to remove background color
-- [Effects] [] Add image sharpening
-- [Effects] [] Add noise
+- [Effects>Transform] [] Option to remove background color
+- [Effects>Filters] [] Add image sharpening
+- [Effects>NoiseTab] [] Add noise
   - [] Amount of noise
   - [] BW or colored
 - [Shortcuts] [] Copy implementation of keyboard shortcuts from orbit
   - Display keyboard shorcuts in buttons/tooltips for buttons
+- [Effects>Transform] [] Flip Horizontall / flip vertically
+- [Effects>Transform] [] Rotate (degrees) and +/- 90 degree buttons
 
+ 
 ## Components
 
 - [Modal] [] Clicking 'Export' will open up a modal showing a preview of the image, option to rename, scale and select export format
@@ -24,6 +27,7 @@
     - [] Filters
     - [] Transform
     - [] Pixel Brightness based effects ()
+    - [] Noise
 ## Bugs
 
 - [] Image dragged in takes full size instead of being calculated correctly (smaller images tha canvas should not get up-sized)
