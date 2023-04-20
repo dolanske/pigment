@@ -8,6 +8,10 @@
 
   .nav-logo {
     margin-right: 10px;
+
+    img {
+      transform: rotate(-45deg);
+    }
   }
 
   .nav-dropdowns {

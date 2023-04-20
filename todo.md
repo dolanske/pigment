@@ -9,6 +9,9 @@
   - With a slider between
 - [Effects>Transform] [] Option to remove background color
 - [Effects>Filters] [] Add image sharpening
+- [Effects>Filters] [] Highlights
+- [Effects>Filters] [] Shadows
+- [Effects>Filters] [] Temperature
 - [Effects>NoiseTab] [] Add noise
   - [] Amount of noise
   - [] BW or colored
