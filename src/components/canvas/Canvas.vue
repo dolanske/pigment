@@ -1,6 +1,6 @@
 <script setup lang='ts'>
 import { useEventListener } from '@vueuse/core'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useCanvas } from '../../store/canvas'
 import { useFile } from '../../store/file'
 import { useLoading } from '../../store/loading'
@@ -88,6 +88,10 @@ function handleDrop(e: any) {
     loading.del(LOAD.upload)
   }
 }
+
+// Computed sizes
+const computedWidth = computed(() => width.value - canvas.cfg.offsetLeft)
+const computedHeight = computed(() => height.value - (canvas.cfg.offsetTop + canvas.cfg.offsetBottom))
 </script>
 
 <template>
@@ -100,8 +104,8 @@ function handleDrop(e: any) {
     <canvas
       id="canvas"
       ref="canvasEl"
-      :width="width"
-      :height="height - (canvas.cfg.offsetBottom + canvas.cfg.offsetTop)"
+      :width="computedWidth"
+      :height="computedHeight"
     />
   </div>
 </template>

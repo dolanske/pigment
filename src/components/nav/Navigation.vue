@@ -1,23 +1,14 @@
 <script setup lang='ts'>
 import {
-  IconCircleHalfFull,
-  IconCrop,
-  IconGradientHorizontal,
-  IconImageFilterVintage,
-  IconInvertColors,
   IconRedoVariant,
-  IconReflectVertical,
-  IconRotateLeft,
   IconUndoVariant,
-  IconWaterCircle,
-  IconWhiteBalanceSunny,
   IconZoomIn,
   IconZoomOut,
 } from '@iconify-prerendered/vue-mdi'
 import { useCanvas } from '../../store/canvas'
 import { useFile } from '../../store/file'
 import WithDropdown from '../generic/WithDropdown.vue'
-import { useEffects } from '../../store/effects'
+import { tabs, useEffects } from '../../store/effects'
 
 const file = useFile()
 const effects = useEffects()
@@ -30,7 +21,7 @@ const canvas = useCanvas()
       <img src="/logo/logo.svg" alt="">
     </div>
 
-    <div class="nav-dropdowns">
+    <div class="nav-dropdowns fixed">
       <WithDropdown>
         <template #header="{ toggle, open }">
           <button class="button btn-white" :class="{ 'btn-gray': open }" @click="toggle">
@@ -64,7 +55,7 @@ const canvas = useCanvas()
 
     <div class="divider" />
 
-    <div class="fn-dropdowns">
+    <!-- <div class="fn-dropdowns">
       <WithDropdown title="Saturation" :icon="IconWaterCircle">
         <input
           v-model="effects.state.saturate.value"
@@ -132,15 +123,19 @@ const canvas = useCanvas()
           :max="effects.state.sepia.max"
         >
       </WithDropdown>
-    </div>
+    </div> -->
 
-    <div class="divider" />
-    <div class="fn-dropdowns">
-      <button class="button btn-white btn-icon" data-title-bottom="Crop">
-        <IconCrop />
-      </button>
-      <button class="button btn-white btn-icon" data-title-bottom="Vertical Effects">
-        <IconReflectVertical />
+    <div class="nav-dropdowns">
+      <button
+        v-for="tab in tabs"
+        :key="tab.id"
+        :class="[tab.id === effects.activeTab ? 'btn-gray' : 'btn-white']"
+        :data-title-bottom="tab.id"
+        class="button btn-tab"
+        @click="effects.$patch({ activeTab: tab.id })"
+      >
+        <component :is="tab.icon" />
+        {{ tab.id }}
       </button>
     </div>
 

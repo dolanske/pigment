@@ -1,3 +1,4 @@
+import { IconCrop, IconDotsHexagon, IconPalette, IconReflectVertical } from '@iconify-prerendered/vue-mdi'
 import { defineStore } from 'pinia'
 import { reactive, ref, watch } from 'vue'
 import { getCanvasContext } from './canvas'
@@ -14,6 +15,25 @@ const effectDefaults: Record<string, number> = {
   'invert': 0,
   'sepia': 0,
 }
+
+export const tabs = [
+  {
+    id: 'filters',
+    icon: IconPalette,
+  },
+  {
+    id: 'advanced',
+    icon: IconReflectVertical,
+  },
+  {
+    id: 'transform',
+    icon: IconCrop,
+  },
+  {
+    id: 'noise',
+    icon: IconDotsHexagon,
+  },
+] as const
 
 // General storage of editor effects, their defaults and current state
 export const useEffects = defineStore('effects', () => {
@@ -112,7 +132,11 @@ export const useEffects = defineStore('effects', () => {
     file.draw()
   }
 
+  // Store active tab
+  const activeTab = ref<string>(tabs[0].id)
+
   return {
+    activeTab,
     state,
     reset,
     collectEffects,

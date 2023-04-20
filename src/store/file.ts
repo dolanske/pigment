@@ -124,7 +124,7 @@ export const useFile = defineStore('file', () => {
     const { naturalHeight, naturalWidth } = image
     // Create offset, which is a sum of the desired opposite vertical or
     // horizontal gaps at end of canvas
-    const OFFSET = 40
+    const OFFSET = 20
     // The min result of vertical and horizontal scale ratio
     const factor = Math.min(ctx.canvas.width / naturalWidth, ctx.canvas.height / naturalHeight)
     // Scale the image and return the new width and height

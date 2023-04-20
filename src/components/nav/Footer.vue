@@ -3,10 +3,8 @@ import { computed, ref } from 'vue'
 import { whenever } from '@vueuse/shared'
 import { useFile } from '../../store/file'
 import { formatFileSize } from '../../js/format'
-import { useCanvas } from '../../store/canvas'
 
 const file = useFile()
-const canvas = useCanvas()
 
 const extension = ref('')
 const size = ref(0)
@@ -28,7 +26,7 @@ const height = computed(() => file?.img?.naturalHeight ?? 0)
 </script>
 
 <template>
-  <footer class="footer" :style="{ height: `${canvas.cfg.offsetBottom}px` }">
+  <footer class="footer">
     <!-- <p>
       <strong>X:{{ x }}</strong>
       &nbsp;
