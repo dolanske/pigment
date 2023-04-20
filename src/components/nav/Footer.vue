@@ -24,7 +24,7 @@ const width = computed(() => file?.img?.naturalWidth ?? 0)
 const height = computed(() => file?.img?.naturalHeight ?? 0)
 
 // const { x, y } = useMouse()
-const formattedY = computed(() => Math.min(window.innerHeight - (canvas.cfg.offsetBottom + canvas.cfg.offsetTop), Math.max(0, y.value - canvas.cfg.offsetTop)))
+// const formattedY = computed(() => Math.min(window.innerHeight - (canvas.cfg.offsetBottom + canvas.cfg.offsetTop), Math.max(0, y.value - canvas.cfg.offsetTop)))
 </script>
 
 <template>
@@ -35,7 +35,7 @@ const formattedY = computed(() => Math.min(window.innerHeight - (canvas.cfg.offs
       <strong>Y:{{ formattedY }}</strong>
     </p> -->
 
-    <div class="flex-1" />
+    <!-- <div class="flex-1" /> -->
 
     <template v-if="file.img">
       <strong>{{ extension }}</strong>
@@ -44,7 +44,7 @@ const formattedY = computed(() => Math.min(window.innerHeight - (canvas.cfg.offs
         <strong>{{ width }}</strong>x<strong>{{ height }}</strong>
       </p>
       <p>
-        Viewing
+        Scaled
         <strong>{{ Math.round(file.currentScale.width) }}</strong>x<strong>{{ Math.round(file.currentScale.height) }}</strong>
       </p>
       <p>

@@ -16,6 +16,7 @@
 ## Components
 
 - [Modal] [] Clicking 'Export' will open up a modal showing a preview of the image, option to rename, scale and select export format
+  - [JPEG] allow setting a jpeg quality
 
 ## Bugs
 
