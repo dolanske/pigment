@@ -1,6 +1,7 @@
 # Todo
 
 - [Effects] [] Review if the order of applied effects has any different end results
+- [Effects] [] Tweak min & max values to not make the image disappear etc
 
 ## Implementation
 
@@ -12,6 +13,7 @@
 - [Effects>Filters] [] Highlights
 - [Effects>Filters] [] Shadows
 - [Effects>Filters] [] Temperature
+- [Effects]
 - [Effects>NoiseTab] [] Add noise
   - [] Amount of noise
   - [] BW or colored

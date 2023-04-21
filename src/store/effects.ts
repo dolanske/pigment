@@ -1,19 +1,61 @@
-import { IconCrop, IconDotsHexagon, IconPalette, IconReflectVertical } from '@iconify-prerendered/vue-mdi'
+import { IconCircleHalfFull, IconCrop, IconDotsHexagon, IconGradientHorizontal, IconImageFilterVintage, IconInvertColors, IconPalette, IconReflectVertical, IconRotateLeft, IconWaterCircle, IconWhiteBalanceSunny } from '@iconify-prerendered/vue-mdi'
 import { defineStore } from 'pinia'
+import type { Component } from 'vue'
 import { reactive, ref, watch } from 'vue'
 import { getCanvasContext } from './canvas'
 import { useFile } from './file'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/filter#examples
 
-const effectDefaults: Record<string, number> = {
-  'saturate': 100,
-  'contrast': 100,
-  'brightness': 100,
-  'grayscale': 0,
-  'hue-rotate': 0,
-  'invert': 0,
-  'sepia': 0,
+export interface EffectDefinition {
+  default: number
+  name: string
+  icon: Component
+}
+
+export interface Effect {
+  value: number
+  min: number
+  max: number
+  run: (amount: number) => string
+}
+
+export const effectDefinitions: Readonly<Record<string, EffectDefinition>> = {
+  'saturate': {
+    name: 'Saturation',
+    icon: IconWaterCircle,
+    default: 100,
+  },
+  'contrast': {
+    name: 'Contrast',
+    icon: IconCircleHalfFull,
+    default: 100,
+  },
+  'brightness': {
+    default: 100,
+    name: 'Brightness',
+    icon: IconWhiteBalanceSunny,
+  },
+  'grayscale': {
+    default: 0,
+    name: 'Grayscale',
+    icon: IconGradientHorizontal,
+  },
+  'hue-rotate': {
+    default: 0,
+    name: 'Hue',
+    icon: IconRotateLeft,
+  },
+  'invert': {
+    default: 0,
+    name: 'Invert',
+    icon: IconInvertColors,
+  },
+  'sepia': {
+    default: 0,
+    name: 'Sepia',
+    icon: IconImageFilterVintage,
+  },
 }
 
 export const tabs = [
@@ -38,7 +80,7 @@ export const tabs = [
 // General storage of editor effects, their defaults and current state
 export const useEffects = defineStore('effects', () => {
   const file = useFile()
-  const state = reactive<Record<keyof typeof effectDefaults, any>>({
+  const state = reactive<Record<keyof typeof effectDefinitions, Effect>>({
     'saturate': {
       value: 100,
       min: 0,
@@ -102,7 +144,7 @@ export const useEffects = defineStore('effects', () => {
   function reset() {
     resetting.value = true
     for (const key of Object.keys(state))
-      state[key].value = effectDefaults[key]
+      state[key].value = effectDefinitions[key].default
     resetting.value = false
   }
 
