@@ -20,6 +20,10 @@
     @include flex(0, center, center);
   }
 
+  &.btn-tall {
+    height: 40px;
+  }
+
   &.btn-large {
     font-size: 1.6rem;
     height: 40px;

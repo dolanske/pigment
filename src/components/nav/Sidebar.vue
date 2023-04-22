@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-import { IconArrowLeftTop, IconArrowRightTop } from '@iconify-prerendered/vue-mdi'
+import { IconArrowLeftTop, IconArrowRightTop, IconFlipHorizontal, IconFlipVertical } from '@iconify-prerendered/vue-mdi'
 import { computed } from 'vue'
 import { useCanvas } from '../../store/canvas'
 import { effectDefinitions, useEffects } from '../../store/effects'
@@ -29,7 +29,7 @@ const rotation = computed({
     <template v-else-if="effects.activeTab === 'transform'">
       <div class="sidebar-section">
         <div class="section-title">
-          <strong>Rotation</strong>
+          <strong>Rotate</strong>
         </div>
 
         <div class="rotation-basic">
@@ -43,6 +43,23 @@ const rotation = computed({
           </button>
 
           <input v-model="rotation" type="number">
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">
+          <strong>Flip</strong>
+        </div>
+
+        <div class="rotation-basic">
+          <button class="button btn-gray btn-tall" @click="file.flip('horizontal')">
+            <IconFlipHorizontal />
+            Horizontal
+          </button>
+          <button class="button btn-gray btn-tall" @click="file.flip('vertical')">
+            <IconFlipVertical />
+            Vertical
+          </button>
         </div>
       </div>
     </template>

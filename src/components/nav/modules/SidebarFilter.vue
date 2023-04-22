@@ -27,7 +27,7 @@ function reset() {
       <component :is="props.data.icon" class="icon" />
       <span>{{ props.data.name }}</span>
 
-      <button class="button btn-white btn-icon" data-title-top="Reset" @click="reset">
+      <button class="button btn-white btn-icon" data-title-left="Reset" @click="reset">
         <IconRefresh />
       </button>
     </div>

@@ -72,6 +72,11 @@ export const useFile = defineStore('file', () => {
   })
   const crop = reactive({ left: 0, top: 0, right: 0, bottom: 0 })
   const rotation = ref(0)
+  const transformScale = reactive({
+    horizontal: 1,
+    vertical: 1,
+    zoom: 1,
+  })
 
   async function upload() {
     const { add, del } = useLoading()
@@ -91,6 +96,8 @@ export const useFile = defineStore('file', () => {
     draw()
   }
 
+  // Main draw function
+  // Before drawing, applies all canvas effects
   function draw() {
     const ctx = getCanvasContext()
     if (!ctx || !img.value)
@@ -103,14 +110,23 @@ export const useFile = defineStore('file', () => {
     const filters = effects.collectEffects()
     ctx.filter = filters
 
+    // Rotate image by setting scale
+    ctx.scale(transformScale.horizontal, transformScale.vertical)
+    // ctx.rotate(rotation.value * Math.PI / 180)
+
+    const transformedImageWidth = width * transformScale.horizontal
+    const transformedImageHeight = height * transformScale.vertical
+
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.drawImage(
       img.value,
       (ctx.canvas.width / 2) - (width / 2),
       (ctx.canvas.height / 2) - (height / 2),
-      width,
-      height,
+      transformedImageWidth,
+      transformedImageHeight,
     )
+
+    // ctx.setTransform(1, 0, 0, 1, 0, 0)
   }
 
   /**
@@ -152,12 +168,21 @@ export const useFile = defineStore('file', () => {
 
     rotation.value = typeof fn === 'number' ? fn : fn(rotation.value)
 
-    // Save before changes are made
-    const image = ctx.canvas
+    draw()
 
-    ctx.setTransform(1, 0, 0, 1, 0, 0) // sets scale and origin
-    ctx.rotate(rotation.value * Math.PI / 180)
-    ctx.drawImage(image, -image.width / 2, -image.height / 2)
+    // Save before changes are made
+    // const image = ctx.canvas
+
+    // const { width, height } = defaultScale()
+    // ctx.save()
+    // // ctx.setTransform(1, 0, 0, 1, 0, 0) // sets scale and origin
+    // ctx.rotate(rotation.value * Math.PI / 180)
+
+    // // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    // ctx.drawImage(image, -image.width / 2, -image.height / 2)
+
+    // // ctx.setTransform(1, 0, 0, 1, 0, 0)
+    // ctx.restore()
   }
 
   /**
@@ -259,10 +284,21 @@ export const useFile = defineStore('file', () => {
     del(LOAD.export)
   }
 
+  function flip(type: 'horizontal' | 'vertical') {
+    const ctx = getCanvasContext()
+    if (!ctx || !img.value)
+      return
+
+    transformScale.horizontal = type === 'horizontal' ? -1 : 1
+    transformScale.vertical = type === 'vertical' ? -1 : 1
+    draw()
+  }
+
   return {
     upload,
     update,
     rotate,
+    flip,
     export: exportFile,
     revert,
     draw,
