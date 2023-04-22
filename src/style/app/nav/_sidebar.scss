@@ -4,104 +4,42 @@
   overflow-y: auto;
   padding: 20px 0 10px;
 
-  .sidebar-title {
+  input[type="number"] {
+    width: 56px;
+    font-size: 1.4rem;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    background-color: var(--color-bg);
+    text-align: center;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    border: 1px solid var(--color-border);
+  }
+
+  .section-title {
     padding: 0 var(--padding);
-    margin-bottom: 40px;
+    margin-bottom: 10px;
+    width: 100%;
 
     strong {
       @include font(600);
-      font-size: 2rem;
-      text-transform: uppercase;
+      font-size: 1.6rem;
+      // text-transform: uppercase;
       color: var(--color-text);
     }
   }
 
-  .sidebar-filter {
+  .sidebar-section {
     display: block;
     width: 100%;
-    padding-right: var(--padding);
     margin-bottom: 30px;
-    padding-left: 45px;
-
-    .filter-title {
-      @include flex(0);
-      position: relative;
-
-      span {
-        flex: 1;
-        font-size: 1.7rem;
-      }
-
-      .icon {
-        left: -25px;
-        top: 6px;
-        position: absolute;
-        font-size: 1.8rem;
-        color: var(--color-text-lighter);
-      }
-    }
-
-    .filter-inputs {
-      input {
-        outline: none !important;
-      }
-
-      input[type="range"] {
-        @include t();
-        padding: 0;
-        width: 100%;
-        -webkit-appearance: none;
-        appearance: none;
-        background-color: var(--color-bg);
-
-        // &:focus,
-        // &:focus-visible {
-        //   background-color: var(--color-bg-light);
-        // }
-
-        &:hover,
-        &:active {
-          &::-moz-range-thumb,
-          &::-webkit-slider-thumb {
-            background-color: var(--color-accent);
-          }
-        }
-
-        &::-moz-range-thumb,
-        &::-webkit-slider-thumb {
-          @include t();
-          -webkit-appearance: none;
-          appearance: none;
-          width: 15px;
-          height: 15px;
-          cursor: pointer;
-          border: none;
-          transform: scale(1);
-          background-color: var(--color-border-light);
-        }
-
-        &::-moz-range-track,
-        &::-webkit-slider-runnable-track {
-          background-color: var(--color-border);
-        }
-      }
-
-      input[type="number"] {
-        width: 56px;
-        font-size: 1.4rem;
-        -moz-appearance: textfield;
-        appearance: textfield;
-        background-color: var(--color-bg);
-        text-align: center;
-
-        &::-webkit-outer-spin-button,
-        &::-webkit-inner-spin-button {
-          -webkit-appearance: none;
-          appearance: none;
-        }
-
-        border: 1px solid var(--color-border);
-      }
-    }
   }
 }
+
+@import "./sidebar/filters";
+@import "./sidebar/transform";

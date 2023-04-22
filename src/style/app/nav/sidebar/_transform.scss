@@ -1,0 +1,15 @@
+.sidebar {
+  .rotation-basic {
+    padding: 0 var(--padding);
+    @include flex(20px, 3); // @include flex(10px);
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
+
+    input {
+      height: 40px;
+    }
+  }
+}

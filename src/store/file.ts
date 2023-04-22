@@ -71,6 +71,7 @@ export const useFile = defineStore('file', () => {
     height: 0,
   })
   const crop = reactive({ left: 0, top: 0, right: 0, bottom: 0 })
+  const rotation = ref(0)
 
   async function upload() {
     const { add, del } = useLoading()
@@ -142,6 +143,21 @@ export const useFile = defineStore('file', () => {
 
     // ctx.scale(canvas.scale, canvas.scale)
     // draw()
+  }
+
+  function rotate(fn: ((rotation: number) => number) | number) {
+    const ctx = getCanvasContext()
+    if (!ctx)
+      return
+
+    rotation.value = typeof fn === 'number' ? fn : fn(rotation.value)
+
+    // Save before changes are made
+    const image = ctx.canvas
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0) // sets scale and origin
+    ctx.rotate(rotation.value * Math.PI / 180)
+    ctx.drawImage(image, -image.width / 2, -image.height / 2)
   }
 
   /**
@@ -246,11 +262,13 @@ export const useFile = defineStore('file', () => {
   return {
     upload,
     update,
+    rotate,
     export: exportFile,
     revert,
     draw,
     scale,
     img,
+    rotation,
     currentScale,
   }
 })

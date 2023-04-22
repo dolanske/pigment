@@ -19,4 +19,10 @@
     padding: 0;
     @include flex(0, center, center);
   }
+
+  &.btn-large {
+    font-size: 1.6rem;
+    height: 40px;
+    padding: 0 15px;
+  }
 }

@@ -1,12 +1,19 @@
 <script setup lang='ts'>
+import { IconArrowLeftTop, IconArrowRightTop } from '@iconify-prerendered/vue-mdi'
+import { computed } from 'vue'
 import { useCanvas } from '../../store/canvas'
 import { effectDefinitions, useEffects } from '../../store/effects'
+import { useFile } from '../../store/file'
 import SidebarFilter from './modules/SidebarFilter.vue'
 
 const canvas = useCanvas()
 const effects = useEffects()
+const file = useFile()
 
-// const value = ref(100)
+const rotation = computed({
+  get: () => file.rotation,
+  set: value => file.rotate(value),
+})
 </script>
 
 <template>
@@ -20,7 +27,24 @@ const effects = useEffects()
       />
     </template>
     <template v-else-if="effects.activeTab === 'transform'">
-      b
+      <div class="sidebar-section">
+        <div class="section-title">
+          <strong>Rotation</strong>
+        </div>
+
+        <div class="rotation-basic">
+          <button class="button btn-gray btn-large" @click="file.rotate((d) => d - 90)">
+            <IconArrowLeftTop />
+            90°
+          </button>
+          <button class="button btn-gray btn-large" @click="file.rotate((d) => d + 90)">
+            90°
+            <IconArrowRightTop />
+          </button>
+
+          <input v-model="rotation" type="number">
+        </div>
+      </div>
     </template>
   </aside>
 </template>
