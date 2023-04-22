@@ -292,9 +292,6 @@ export const useFile = defineStore('file', () => {
 
     transformScale.horizontal = type === 'horizontal' ? (transformScale.horizontal * -1) : 1
     transformScale.vertical = type === 'vertical' ? (transformScale.vertical * -1) : 1
-
-    console.table(transformScale)
-
     draw()
   }
 

@@ -175,7 +175,7 @@ export const useEffects = defineStore('effects', () => {
   }
 
   // Store active tab
-  const activeTab = ref<string>(tabs[2].id)
+  const activeTab = ref<string>(tabs[3].id)
 
   return {
     activeTab,

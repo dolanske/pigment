@@ -29,7 +29,6 @@
     strong {
       @include font(600);
       font-size: 1.6rem;
-      // text-transform: uppercase;
       color: var(--color-text);
     }
   }
@@ -43,3 +42,4 @@
 
 @import "./sidebar/filters";
 @import "./sidebar/transform";
+@import "./sidebar/noise";
