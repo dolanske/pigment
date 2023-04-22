@@ -21,6 +21,18 @@
   }
 
   .noise-properties {
+    @include flex(20px);
+    // @include grid(10px 2);
     padding: 0 var(--padding);
+    margin-bottom: 20px;
+
+    .form-select {
+      flex: 1;
+    }
+  }
+
+  .filter-inputs {
+    padding: 0 var(--padding);
+    margin-bottom: 20px;
   }
 }

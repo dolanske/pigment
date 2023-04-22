@@ -5,6 +5,7 @@ import { computed } from 'vue'
 interface Props {
   label?: string
   modelValue: boolean
+  reverse?: boolean
   // iconOn?: string
   // iconOff?: string
 }
@@ -28,13 +29,13 @@ const d = computed(() => `id${Math.random().toString(16).slice(2)}`)
 </script>
 
 <template>
-  <div class="form-checkbox">
+  <div class="form-checkbox" :class="{ reverse: props.reverse }">
     <input :id="d" v-model="data" type="checkbox" :name="d">
     <label :for="d">
 
       <div class="icon">
-        <IconCheckboxBlankOutline v-if="modelValue" />
-        <IconCheckboxOutline v-else />
+        <IconCheckboxOutline v-if="modelValue" />
+        <IconCheckboxBlankOutline v-else />
       </div>
 
       <p v-if="props.label">{{ props.label }}</p>

@@ -1,12 +1,15 @@
 .form-checkbox {
   display: block;
-  margin-bottom: 10px;
+
+  &.reverse input[type="checkbox"] + label {
+    flex-direction: row-reverse;
+  }
 
   input[type="checkbox"] {
     display: none;
 
     & + label {
-      @include flex(15px);
+      @include flex(5px, flex-start, center);
       cursor: pointer;
 
       p {
@@ -16,6 +19,7 @@
       .icon {
         @include t();
         color: var(--color-text-lighter);
+        transform: translateY(1px);
 
         svg {
           font-size: 2rem;
@@ -30,7 +34,7 @@
     }
 
     &:checked + label .icon {
-      color: var(--color-accent);
+      color: var(--color-text);
     }
   }
 }
