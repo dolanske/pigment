@@ -103,6 +103,8 @@ export const useFile = defineStore('file', () => {
     if (!ctx || !img.value)
       return
 
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+
     const effects = useEffects()
     const { width, height } = defaultScale()
 
@@ -117,7 +119,6 @@ export const useFile = defineStore('file', () => {
     const transformedImageWidth = width * transformScale.horizontal
     const transformedImageHeight = height * transformScale.vertical
 
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.drawImage(
       img.value,
       (ctx.canvas.width / 2) - (width / 2),
@@ -289,8 +290,11 @@ export const useFile = defineStore('file', () => {
     if (!ctx || !img.value)
       return
 
-    transformScale.horizontal = type === 'horizontal' ? -1 : 1
-    transformScale.vertical = type === 'vertical' ? -1 : 1
+    transformScale.horizontal = type === 'horizontal' ? (transformScale.horizontal * -1) : 1
+    transformScale.vertical = type === 'vertical' ? (transformScale.vertical * -1) : 1
+
+    console.table(transformScale)
+
     draw()
   }
 
