@@ -2,11 +2,7 @@
 import { flip, offset, shift, size, useFloating } from '@floating-ui/vue'
 import { IconChevronDown, IconChevronUp } from '@iconify-prerendered/vue-mdi'
 import { onClickOutside } from '@vueuse/core'
-import { isArray } from 'lodash-es'
 import { computed, ref } from 'vue'
-
-type Options = Record<string, string>
-type Value = string | string[] | null
 
 const props = defineProps<{
   label?: string
@@ -20,6 +16,11 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value: Value): void
 }>()
+
+const { isArray } = Array
+
+type Options = Record<string, string>
+type Value = string | string[] | null
 
 const open = ref(false)
 const anchor = ref()

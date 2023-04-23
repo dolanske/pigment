@@ -8,20 +8,36 @@ const noiseType = ref('gaussian')
 const noiseGrayscale = ref(true)
 const noiseAmount = ref(0)
 
+const beforeNoiseEl = ref<HTMLCanvasElement>()
+const afterNoiseEl = ref<HTMLCanvasElement>()
+
 const options = {
   gaussian: 'Gaussian',
   random: 'Randomized',
 }
 
-let ctx1: CanvasRenderingContext2D
-let ctx2: CanvasRenderingContext2D
+let beforeCtx: CanvasRenderingContext2D
+let afterCtx: CanvasRenderingContext2D
 
 onMounted(() => {
+  if (beforeNoiseEl.value && afterNoiseEl.value) {
+    beforeCtx ??= beforeNoiseEl.value.getContext('2d')
+    afterCtx ??= afterNoiseEl.value.getContext('2d')
+  }
 
+  // const first =
+  // First, when this mounts, we get current image and assign it to both canvas contexts
+
+  // It should render the image scaled by 4x and centered, we only need a sample of it
+  updatePreview()
 })
 
 const file = useFile()
-// watch(() => file.img)
+
+function updatePreview() {
+  if (!file.img)
+    return
+}
 </script>
 
 <template>
@@ -31,8 +47,8 @@ const file = useFile()
     </div>
 
     <div class="noise-preview">
-      <canvas id="before" width="134" height="134" />
-      <canvas id="after" width="134" height="134" />
+      <canvas id="before" ref="left" width="134" height="134" />
+      <canvas id="after" ref="right" width="134" height="134" />
     </div>
 
     <div class="noise-properties">
