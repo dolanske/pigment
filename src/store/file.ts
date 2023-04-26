@@ -133,9 +133,9 @@ export const useFile = defineStore('file', () => {
   /**
    * Scales the iamge down to fit the canvas and leave some space at the boreder
    */
-  function defaultScale(_img?: HTMLImageElement) {
+  function defaultScale(_img?: HTMLImageElement, _ctx?: CanvasRenderingContext2D) {
     const image = _img ?? img.value
-    const ctx = getCanvasContext()
+    const ctx = _ctx ?? getCanvasContext()
     if (!ctx || !image)
       return { width: 0, height: 0 }
 
@@ -307,5 +307,6 @@ export const useFile = defineStore('file', () => {
     img,
     rotation,
     currentScale,
+    defaultScale,
   }
 })

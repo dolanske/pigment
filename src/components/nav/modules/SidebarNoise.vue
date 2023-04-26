@@ -1,8 +1,9 @@
 <script setup lang='ts'>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import InputSelect from '../../form/InputSelect.vue'
 import InputCheckbox from '../../form/InputCheckbox.vue'
 import { useFile } from '../../../store/file'
+import { addNoise } from '../../../js/effects'
 
 const noiseType = ref('gaussian')
 const noiseGrayscale = ref(true)
@@ -21,8 +22,13 @@ let afterCtx: CanvasRenderingContext2D
 
 onMounted(() => {
   if (beforeNoiseEl.value && afterNoiseEl.value) {
-    beforeCtx ??= beforeNoiseEl.value.getContext('2d')
-    afterCtx ??= afterNoiseEl.value.getContext('2d')
+    const _beforeCtx = beforeNoiseEl.value.getContext('2d')
+    const _afterCtx = afterNoiseEl.value.getContext('2d')
+
+    if (_beforeCtx && _afterCtx) {
+      beforeCtx = _beforeCtx
+      afterCtx = _afterCtx
+    }
   }
 
   // const first =
@@ -34,10 +40,34 @@ onMounted(() => {
 
 const file = useFile()
 
-function updatePreview() {
+async function updatePreview() {
   if (!file.img)
     return
+
+  const { width, height } = file.defaultScale(file.img, beforeCtx)
+
+  beforeCtx.drawImage(
+    file.img,
+    (beforeCtx.canvas.width / 2) - (width * 2),
+    (beforeCtx.canvas.height / 2) - (height * 2),
+    width * 4,
+    height * 4,
+  )
+
+  const withNoise = await addNoise(afterCtx, 10)
+
+  console.log(withNoise)
+
+  afterCtx.drawImage(
+    withNoise,
+    (afterCtx.canvas.width / 2) - (width * 2),
+    (afterCtx.canvas.height / 2) - (height * 2),
+    width * 4,
+    height * 4,
+  )
 }
+
+watch(() => file.img, updatePreview)
 </script>
 
 <template>
@@ -47,8 +77,8 @@ function updatePreview() {
     </div>
 
     <div class="noise-preview">
-      <canvas id="before" ref="left" width="134" height="134" />
-      <canvas id="after" ref="right" width="134" height="134" />
+      <canvas id="before" ref="beforeNoiseEl" width="134" height="134" />
+      <canvas id="after" ref="afterNoiseEl" width="134" height="134" />
     </div>
 
     <div class="noise-properties">
