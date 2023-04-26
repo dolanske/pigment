@@ -1,27 +1,28 @@
-import {rnd}
+import { rndMinMax, setRGB } from '../util'
 
 onmessage = (e: MessageEvent) => {
   const {
     imageData,
-    noiseAmount,
+    noiseIntensity,
   }: {
     imageData: ImageData
-    noiseAmount: number
-    canvas: HTMLCanvasElement
+    noiseIntensity: number
   } = e.data
-  // const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
-  const transformedData = new ImageData(imageData.width, imageData.height)
+  const transformed = new ImageData(imageData.width, imageData.height)
 
   for (let i = 0; i < imageData.data.length; i += 4) {
     const [r, g, b, a] = imageData.data.slice(i, i + 4)
-    // TODO: use noiseAmount to determine the final multiplier
-    // const modifier = rndMinMax(0, 10) === 5 ? 3 : 1
+    // REVIEW (is this needed?): use noiseIntensity to determine the final multiplier
+    // TODO: figure out how to apply different types of noise
+    // - randomly choose which channel gets updated (Rgb)
+    // - only apply to alpha
 
-    transformedData.data[i] = r
-    transformedData.data[i + 1] = g
-    transformedData.data[i + 2] = b
-    transformedData.data[i + 3] = a
+    setRGB(transformed.data, i,
+      rndMinMax(r - noiseIntensity, r + noiseIntensity),
+      rndMinMax(g - noiseIntensity, g + noiseIntensity),
+      rndMinMax(b - noiseIntensity, b + noiseIntensity),
+      a)
   }
 
-  postMessage(transformedData)
+  postMessage({ transformed })
 }

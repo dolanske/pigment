@@ -1,37 +1,53 @@
-function runWorker(ctx: CanvasRenderingContext2D, params: any = {}, workerUrl: string): Promise<HTMLImageElement> {
+import { useLoading } from '../store/loading'
+
+interface WorkerMessage {
+  progress?: number
+  transformed?: ImageData
+}
+
+interface WorkerParams {
+  imageData: ImageData
+  [key: string]: unknown
+}
+
+function runWorker(params: WorkerParams, workerUrl: string): Promise<ImageData> {
+  const { setProgress, clearProgress } = useLoading()
+  // Initialize worker
   const worker = new Worker(new URL(workerUrl, import.meta.url), {
     type: 'module',
   })
 
   return new Promise((resolve) => {
-    const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
+    worker.postMessage(params)
+    worker.onmessage = (event: MessageEvent<WorkerMessage>) => {
+      const { progress, transformed } = event.data
 
-    worker.postMessage({
-      imageData,
-      ...params,
-    })
+      // This returns the loading progress
+      if (progress)
+        setProgress(progress)
 
-    worker.onmessage = (event: MessageEvent<ImageData>) => {
-      const canvas = document.createElement('canvas')
-      const ctx = canvas.getContext('2d')
-
-      if (ctx) {
-        ctx.putImageData(event.data, 0, 0)
-
-        const image = new Image()
-        image.src = ctx.canvas.toDataURL()
-        image.onload = () => {
-          resolve(image)
-        }
+      // Returns the transformed ImageData which get added to the canvas
+      if (transformed) {
+        clearProgress()
+        resolve(transformed)
       }
     }
   })
 }
 
 /**
- * Noise function
+ * Filter definitions
  */
 
-export function addNoise(ctx: CanvasRenderingContext2D, noiseAmount: number) {
-  return runWorker(ctx, { noiseAmount }, './effect-workers/noise.ts')
+export function addNoise(imageData: ImageData, noiseIntensity: number) {
+  // Don't perform effect if noiseIntensity is at 0, simply return the
+  // same image
+  if (noiseIntensity === 0)
+    return Promise.resolve(imageData)
+
+  return runWorker({ imageData, noiseIntensity }, './effect-workers/noise.ts')
+}
+
+export function addReduction(imageData: ImageData, hard?: boolean, threshold?: number) {
+  return runWorker({ imageData, hard, threshold }, './effect-workers/reduce.ts')
 }

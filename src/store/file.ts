@@ -66,6 +66,7 @@ export function triggerUpload(): Promise<HTMLImageElement> {
 export const useFile = defineStore('file', () => {
   // const canvas = ref<HTMLCanvasElement>()
   const img = ref<HTMLImageElement>()
+  const originalImg = ref<HTMLImageElement>()
   const currentScale = reactive({
     width: 0,
     height: 0,
@@ -82,10 +83,7 @@ export const useFile = defineStore('file', () => {
     const { add, del } = useLoading()
     add(LOAD.upload)
     triggerUpload()
-      .then((res) => {
-        img.value = res
-        draw()
-      })
+      .then(update)
       .finally(() => {
         del(LOAD.upload)
       })
@@ -93,6 +91,7 @@ export const useFile = defineStore('file', () => {
 
   async function update(image: HTMLImageElement) {
     img.value = image
+    originalImg.value = image
     draw()
   }
 
@@ -305,6 +304,7 @@ export const useFile = defineStore('file', () => {
     draw,
     scale,
     img,
+    originalImg,
     rotation,
     currentScale,
     defaultScale,

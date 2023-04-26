@@ -60,6 +60,7 @@
         }
       }
 
+      &::-ms-track,
       &::-moz-range-thumb,
       &::-webkit-slider-thumb {
         @include t();
@@ -76,6 +77,7 @@
       &::-moz-range-track,
       &::-webkit-slider-runnable-track {
         background-color: var(--color-border);
+        background: var(--color-border);
       }
     }
   }
