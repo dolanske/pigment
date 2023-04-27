@@ -72,11 +72,11 @@ const canvas = useCanvas()
     <div class="flex-1" />
 
     <div class="fn-dropdowns">
-      <button class="button btn-white btn-icon" data-title-bottom="Zoom In" @click="canvas.scale += 1">
+      <button class="button btn-white btn-icon" data-title-bottom="Zoom In" @click="file.transformScale.zoom += 1">
         <IconZoomIn />
       </button>
 
-      <button class="button btn-white btn-icon" data-title-bottom="Zoom Out" @click="canvas.scale -= 1">
+      <button class="button btn-white btn-icon" data-title-bottom="Zoom Out" @click="file.transformScale.zoom -= 1">
         <IconZoomOut />
       </button>
 

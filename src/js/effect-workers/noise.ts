@@ -16,7 +16,6 @@ onmessage = (e: MessageEvent) => {
 
   for (let i = 0; i < imageData.data.length; i += 4) {
     const [r, g, b, a] = imageData.data.slice(i, i + 4)
-    // REVIEW (is this needed?): use noiseIntensity to determine the final multiplier
     // TODO: figure out how to apply different types of noise
     // - randomly choose which channel gets updated (Rgb)
     // - only apply to alpha

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 
 // Query and return canvas context
 export function getCanvasContext(id = '#canvas') {
@@ -8,7 +8,7 @@ export function getCanvasContext(id = '#canvas') {
 }
 
 export const useCanvas = defineStore('canvas', () => {
-  const scale = ref(1)
+  // const scale = ref(1)
   const cfg = reactive({
     offsetTop: 50,
     offsetBottom: 0,
@@ -22,7 +22,7 @@ export const useCanvas = defineStore('canvas', () => {
 
   return {
     cfg,
-    scale,
+    // scale,
     center,
   }
 })

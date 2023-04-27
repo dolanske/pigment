@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { LOAD } from '../js/definitions'
 import { useToast } from './toast'
 import { getCanvasContext } from './canvas'
@@ -71,7 +71,7 @@ export const useFile = defineStore('file', () => {
     width: 0,
     height: 0,
   })
-  const crop = reactive({ left: 0, top: 0, right: 0, bottom: 0 })
+  // const crop = reactive({ left: 0, top: 0, right: 0, bottom: 0 })
   const rotation = ref(0)
   const transformScale = reactive({
     horizontal: 1,
@@ -94,6 +94,8 @@ export const useFile = defineStore('file', () => {
     originalImg.value = image
     draw()
   }
+
+  watch(() => transformScale.zoom, draw)
 
   // Main draw function
   // Before drawing, applies all canvas effects
@@ -118,12 +120,13 @@ export const useFile = defineStore('file', () => {
     const transformedImageWidth = width * transformScale.horizontal
     const transformedImageHeight = height * transformScale.vertical
 
+    // TODO: move in canvas can be done by manually setting canvas center and updating that later
     ctx.drawImage(
       img.value,
-      (ctx.canvas.width / 2) - (width / 2),
-      (ctx.canvas.height / 2) - (height / 2),
-      transformedImageWidth,
-      transformedImageHeight,
+      (ctx.canvas.width / 2) - (width / 2) * transformScale.zoom,
+      (ctx.canvas.height / 2) - (height / 2) * transformScale.zoom,
+      transformedImageWidth * transformScale.zoom,
+      transformedImageHeight * transformScale.zoom,
     )
 
     // ctx.setTransform(1, 0, 0, 1, 0, 0)
@@ -308,5 +311,6 @@ export const useFile = defineStore('file', () => {
     rotation,
     currentScale,
     defaultScale,
+    transformScale,
   }
 })
