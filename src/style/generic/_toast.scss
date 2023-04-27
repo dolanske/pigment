@@ -22,7 +22,7 @@ This is the styling for toast notifications
       margin-bottom: 10px;
 
       .toast-item {
-        @include radius(var(--radius-sm));
+        // @include radius(var(--radius-sm));
         display: block;
         padding: 10px 15px;
         min-width: var(--toast-min-width);
@@ -43,7 +43,7 @@ This is the styling for toast notifications
 
         &:before {
           content: "";
-          @include radius(var(--radius-sm));
+          // @include radius(var(--radius-sm));
           display: block;
           position: absolute;
           left: 10px;

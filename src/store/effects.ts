@@ -1,4 +1,4 @@
-import { IconCircleHalfFull, IconCrop, IconDotsHexagon, IconGradientHorizontal, IconImageFilterVintage, IconInvertColors, IconPalette, IconReflectVertical, IconRotateLeft, IconWaterCircle, IconWhiteBalanceSunny } from '@iconify-prerendered/vue-mdi'
+import { IconCircleHalfFull, IconCrop, IconDotsHexagon, IconGradientHorizontal, IconImageFilterVintage, IconInvertColors, IconPalette, IconRotateLeft, IconWaterCircle, IconWhiteBalanceSunny } from '@iconify-prerendered/vue-mdi'
 import { defineStore } from 'pinia'
 import type { Component } from 'vue'
 import { reactive, ref, watch } from 'vue'
@@ -63,10 +63,10 @@ export const tabs = [
     id: 'filters',
     icon: IconPalette,
   },
-  {
-    id: 'advanced',
-    icon: IconReflectVertical,
-  },
+  // {
+  //   id: 'advanced',
+  //   icon: IconReflectVertical,
+  // },
   {
     id: 'transform',
     icon: IconCrop,
@@ -84,7 +84,7 @@ export const useEffects = defineStore('effects', () => {
     'saturate': {
       value: 100,
       min: 0,
-      max: 1000,
+      max: 800,
       run: (amount: number) => {
         return `saturate(${amount / 100})`
       },
@@ -175,7 +175,7 @@ export const useEffects = defineStore('effects', () => {
   }
 
   // Store active tab
-  const activeTab = ref<string>(tabs[3].id)
+  const activeTab = ref<string>(tabs[2].id)
 
   return {
     activeTab,

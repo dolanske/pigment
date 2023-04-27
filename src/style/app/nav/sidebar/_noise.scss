@@ -7,16 +7,6 @@
 
     canvas {
       background-color: var(--color-bg-light);
-
-      &:first-of-type {
-        border-top-left-radius: var(--radius-lg);
-        border-bottom-left-radius: var(--radius-lg);
-      }
-
-      &:last-of-type {
-        border-top-right-radius: var(--radius-lg);
-        border-bottom-right-radius: var(--radius-lg);
-      }
     }
   }
 

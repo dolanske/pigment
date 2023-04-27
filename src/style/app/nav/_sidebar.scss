@@ -76,10 +76,11 @@
 
       &::-moz-range-track,
       &::-webkit-slider-runnable-track {
-        height: 5px;
+        // height: 5px !important;
         // width: 100%;
         background-color: var(--color-border);
         background: var(--color-border);
+        border-color: var(--color-border-light);
       }
     }
   }

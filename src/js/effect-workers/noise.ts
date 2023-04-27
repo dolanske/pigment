@@ -12,6 +12,8 @@ onmessage = (e: MessageEvent) => {
   } = e.data
   const transformed = new ImageData(imageData.width, imageData.height)
 
+  console.log(imageData.data.length / 4)
+
   for (let i = 0; i < imageData.data.length; i += 4) {
     const [r, g, b, a] = imageData.data.slice(i, i + 4)
     // REVIEW (is this needed?): use noiseIntensity to determine the final multiplier
@@ -19,15 +21,24 @@ onmessage = (e: MessageEvent) => {
     // - randomly choose which channel gets updated (Rgb)
     // - only apply to alpha
 
-    let randomR = rndMinMax(r - noiseIntensity, r + noiseIntensity)
-    let randomG = rndMinMax(g - noiseIntensity, g + noiseIntensity)
-    let randomB = rndMinMax(b - noiseIntensity, b + noiseIntensity)
+    // https://en.wikipedia.org/wiki/Image_noise?useskin=vector
+
+    let randomR: number = r
+    let randomG: number = g
+    let randomB: number = b
 
     if (isGrayscale) {
-      const grayscale = randomR * 0.3 + randomG * 0.59 + randomB * 0.11
-      randomR = grayscale
-      randomG = grayscale
-      randomB = grayscale
+      if (rndMinMax(0, noiseIntensity) === 4) {
+        const grayscale = randomR * 0.3 + randomG * 0.59 + randomB * 0.11
+        randomR = grayscale / 0.05
+        randomG = grayscale / 0.05
+        randomB = grayscale / 0.05
+      }
+    }
+    else {
+      randomR = rndMinMax(r - noiseIntensity, r + noiseIntensity)
+      randomG = rndMinMax(g - noiseIntensity, g + noiseIntensity)
+      randomB = rndMinMax(b - noiseIntensity, b + noiseIntensity)
     }
 
     setRGB(transformed.data, i,
@@ -36,6 +47,8 @@ onmessage = (e: MessageEvent) => {
       randomB,
       a)
   }
+
+  console.log('completed')
 
   postMessage({ transformed })
 }
