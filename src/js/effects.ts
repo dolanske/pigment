@@ -39,13 +39,13 @@ function runWorker(params: WorkerParams, workerUrl: string): Promise<ImageData> 
  * Filter definitions
  */
 
-export function addNoise(imageData: ImageData, noiseIntensity: number) {
+export function addNoise(imageData: ImageData, noiseIntensity: number, isGrayscale: boolean) {
   // Don't perform effect if noiseIntensity is at 0, simply return the
   // same image
   if (noiseIntensity === 0)
     return Promise.resolve(imageData)
 
-  return runWorker({ imageData, noiseIntensity }, './effect-workers/noise.ts')
+  return runWorker({ imageData, noiseIntensity, isGrayscale }, './effect-workers/noise.ts')
 }
 
 export function addReduction(imageData: ImageData, hard?: boolean, threshold?: number) {

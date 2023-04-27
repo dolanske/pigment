@@ -57,7 +57,11 @@ async function updatePreview() {
 }
 
 async function setPreviewNoise() {
-  addNoise(beforeCtx.getImageData(0, 0, afterCtx.canvas.width, afterCtx.canvas.height), noiseAmount.value)
+  addNoise(
+    beforeCtx.getImageData(0, 0, afterCtx.canvas.width, afterCtx.canvas.height),
+    noiseAmount.value,
+    noiseGrayscale.value,
+  )
     .then((data) => {
       afterCtx.putImageData(data, 0, 0)
     })
@@ -94,7 +98,7 @@ function applyNoise() {
 
   const tempData = tempContext.getImageData(0, 0, naturalWidth, naturalHeight)
 
-  addNoise(tempData, noiseAmount.value)
+  addNoise(tempData, noiseAmount.value, noiseGrayscale.value)
     .then((data) => {
       tempContext.putImageData(data, 0, 0)
       const url = tempCanvas.toDataURL()
