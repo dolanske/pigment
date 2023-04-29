@@ -109,17 +109,15 @@ function applyNoise() {
       }
     })
 }
+
+const canvasSize = 161
 </script>
 
 <template>
   <div class="sidebar-section">
-    <div class="section-title">
-      <strong>Noise</strong>
-    </div>
-
     <div class="noise-preview">
-      <canvas id="before" ref="beforeNoiseEl" width="134" height="134" />
-      <canvas id="after" ref="afterNoiseEl" width="134" height="134" />
+      <canvas id="before" ref="beforeNoiseEl" :width="canvasSize" :height="canvasSize" />
+      <canvas id="after" ref="afterNoiseEl" :width="canvasSize" :height="canvasSize" />
     </div>
 
     <div class="noise-properties">
@@ -127,7 +125,7 @@ function applyNoise() {
       <InputCheckbox v-model="noiseGrayscale" reverse label="Grayscale" />
     </div>
 
-    <div class="filter-inputs">
+    <div class="filter-inputs noise">
       <input
         v-model.number="noiseAmount"
         type="range"

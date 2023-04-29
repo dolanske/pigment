@@ -5,10 +5,9 @@
   // height: 50px;
   border-bottom: 1px solid var(--color-border);
   padding: 0 var(--padding);
+  padding-left: 15px;
 
   .nav-logo {
-    // margin-right: 10px;
-
     img {
       transform: rotate(-45deg);
     }

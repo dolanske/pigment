@@ -10,9 +10,9 @@ export function getCanvasContext(id = '#canvas') {
 export const useCanvas = defineStore('canvas', () => {
   // const scale = ref(1)
   const cfg = reactive({
-    offsetTop: 50,
+    offsetTop: 44,
     offsetBottom: 0,
-    offsetLeft: 308,
+    offsetLeft: 324,
   })
 
   const center = reactive({

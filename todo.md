@@ -2,21 +2,20 @@
 
 - [Effects] [] Review if the order of applied effects has any different end results
 - [Effects] [] Tweak min & max values to not make the image disappear etc
-
 ## Implementation
 
 - [Canvas] [] Option to compare original picture with current picture
   - Side by side
   - With a slider between
-- [Effects>Advanced] [] Option to remove background color
-- [Effects>Filters] [] Add image sharpening
+- [Effects>Filters] [] Add image sharpening [https://gist.github.com/mikecao/65d9fc92dc7197cb8a7c]
 - [Effects>Filters] [] Highlights
 - [Effects>Filters] [] Shadows
 - [Effects>Filters] [] Temperature
 - [Effects]
-- [Effects>NoiseTab] [] Add noise
-  - [] Amount of noise
-  - [] BW or colored
+- [Effects>NoiseTab] [x] Add noise
+  - [] gaussian noise
+  - [] uniform noise
+  - [] fire out how to apply monochromatic noise
 - [Shortcuts] [] Copy implementation of keyboard shortcuts from orbit
   - Display keyboard shorcuts in buttons/tooltips for buttons
 - [Effects>Transform] [] Flip Horizontall / flip vertically

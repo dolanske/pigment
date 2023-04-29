@@ -8,7 +8,7 @@ import {
 import { useCanvas } from '../../store/canvas'
 import { useFile } from '../../store/file'
 import WithDropdown from '../generic/WithDropdown.vue'
-import { tabs, useEffects } from '../../store/effects'
+import { useEffects } from '../../store/effects'
 
 const file = useFile()
 const effects = useEffects()
@@ -53,7 +53,7 @@ const canvas = useCanvas()
       </button>
     </div>
 
-    <div class="divider" />
+    <!-- <div class="divider" />
 
     <div class="nav-dropdowns">
       <button
@@ -67,7 +67,8 @@ const canvas = useCanvas()
         <component :is="tab.icon" />
         {{ tab.id }}
       </button>
-    </div>
+    </div> -->
+    <div class="flex-1" />
 
     <div class="flex-1" />
 

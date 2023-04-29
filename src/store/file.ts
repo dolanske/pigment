@@ -280,7 +280,7 @@ export const useFile = defineStore('file', () => {
     tempCtx?.putImageData(trimmed, 0, 0)
 
     const a = document.createElement('a')
-    a.href = tempCanvas.toDataURL('image/png')
+    a.href = tempCanvas.toDataURL('image/jpeg', 0)
     a.download = img.value.src.replace(/^.*[\\\/]/, '')
     a.click()
     a.remove()

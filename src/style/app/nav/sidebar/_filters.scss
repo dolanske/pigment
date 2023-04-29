@@ -9,6 +9,7 @@
     .filter-title {
       @include flex(0);
       position: relative;
+      height: 25px;
 
       span {
         flex: 1;
@@ -17,7 +18,7 @@
 
       .icon {
         left: -25px;
-        top: 6px;
+        top: 4px;
         position: absolute;
         font-size: 1.8rem;
         color: var(--color-text-lighter);
