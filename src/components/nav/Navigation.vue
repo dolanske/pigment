@@ -63,7 +63,7 @@ function resetApp() {
           New File
         </button>
         <button class="button" @click="file.revert()">
-          Revert Changes
+          Undo all changes
         </button>
         <hr>
         <button class="button" @click="file.export()">
@@ -77,15 +77,15 @@ function resetApp() {
           Clear
         </button>
       </WithDropdown>
-      <!-- <button class="button btn-white">
-        EDIT
+      <button class="button btn-white">
+        Presets
       </button>
       <button class="button btn-white">
-        SETTINGS
+        Settings
       </button>
       <button class="button btn-white">
-        HELP
-      </button> -->
+        Help
+      </button>
     </div>
 
     <!-- <div class="divider" />

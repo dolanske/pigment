@@ -40,8 +40,8 @@
 ## Bugs
 
 - [] Image dragged in takes full size instead of being calculated correctly (smaller images tha canvas should not get up-sized)
-- [] Noise is not being applied
-- [] 
+- [] Noise is not being applied (to BW / large images)
+- [] Revert() does not work
 
 ---
 
