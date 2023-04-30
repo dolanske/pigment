@@ -18,11 +18,11 @@ const rotation = computed({
     </div>
 
     <div class="rotation-basic">
-      <button class="button btn-gray btn-large" @click="file.rotate((d) => d - 90)">
+      <button class="button btn-gray-light btn-large" @click="file.rotate((d) => d - 90)">
         <IconArrowLeftTop />
         90°
       </button>
-      <button class="button btn-gray btn-large" @click="file.rotate((d) => d + 90)">
+      <button class="button btn-gray-light btn-large" @click="file.rotate((d) => d + 90)">
         90°
         <IconArrowRightTop />
       </button>
@@ -37,11 +37,11 @@ const rotation = computed({
     </div>
 
     <div class="rotation-basic">
-      <button class="button btn-gray btn-tall" @click="file.flip('horizontal')">
+      <button class="button btn-gray-light btn-tall" @click="file.flip('horizontal')">
         <IconFlipHorizontal />
         Horizontal
       </button>
-      <button class="button btn-gray btn-tall" @click="file.flip('vertical')">
+      <button class="button btn-gray-light btn-tall" @click="file.flip('vertical')">
         <IconFlipVertical />
         Vertical
       </button>

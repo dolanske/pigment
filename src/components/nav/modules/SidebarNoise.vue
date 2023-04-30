@@ -105,7 +105,9 @@ function applyNoise() {
 
       if (file.img) {
         file.img.src = url
-        file.img.onload = () => file.draw()
+        file.img.onload = () => {
+          file.draw()
+        }
       }
     })
 }
