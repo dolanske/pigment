@@ -35,7 +35,10 @@ export const useLoading = defineStore('loading', {
     },
     // Sets the progress percentage
     setProgress(amount: number) {
-      this.progress = Math.min(100, amount)
+      if (amount >= 100)
+        this.clearProgress()
+      else
+        this.progress = Math.min(100, amount)
     },
     // Completes the progress. Sets progress to 100 and after a slight
     // delay resets it to null

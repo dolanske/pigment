@@ -116,6 +116,7 @@ const canvasSize = 161
 <template>
   <div class="sidebar-section">
     <div class="noise-preview">
+      <span v-if="!file.img">Upload an image to see noise preview.</span>
       <canvas id="before" ref="beforeNoiseEl" :width="canvasSize" :height="canvasSize" />
       <canvas id="after" ref="afterNoiseEl" :width="canvasSize" :height="canvasSize" />
     </div>
@@ -136,7 +137,7 @@ const canvasSize = 161
     </div>
 
     <div class="section-title">
-      <button class="button btn-gray w-100 btn-tall" @click="applyNoise">
+      <button class="button btn-gray-light w-100 btn-tall" @click="applyNoise">
         Apply
       </button>
     </div>

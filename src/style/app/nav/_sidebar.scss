@@ -7,12 +7,22 @@
 
   .sidebar-tabs {
     @include grid(0, 3);
-    border-bottom: 1px solid var(--color-border);
     margin-bottom: 20px;
+    width: 100%;
 
     button {
+      @include font(600);
       @include flex(5px, center);
       height: 60px;
+      // background-color: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-light);
+
+      &.is-active {
+        // background-color: var(--color-bg);
+        color: var(--color-text);
+        border-bottom-color: var(--color-text-light);
+      }
 
       svg {
         color: var(--color-text-light);

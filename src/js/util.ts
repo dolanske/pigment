@@ -6,6 +6,10 @@ export function compare(firstR: number, secondR: number, threshold: number) {
   return Math.abs(firstR - secondR) <= threshold
 }
 
+export function clamp(min: number, value: number, max: number) {
+  return Math.min(max, Math.max(min, value))
+}
+
 /**
  * Inserts a pixel within an ImageData data Array. Each pixel takes 4
  * spaces within that array so to use this method the pixel iterator
@@ -14,10 +18,10 @@ export function compare(firstR: number, secondR: number, threshold: number) {
  *
  */
 export function setRGB(imageData: Uint8ClampedArray, index: number, r = 0, g = 0, b = 0, a = 255) {
-  imageData[index] = clampColor(r)
-  imageData[index + 1] = clampColor(g)
-  imageData[index + 2] = clampColor(b)
-  imageData[index + 3] = clampColor(a)
+  imageData[index] = clamp(0, r, 255)
+  imageData[index + 1] = clamp(0, g, 255)
+  imageData[index + 2] = clamp(0, b, 255)
+  imageData[index + 3] = clamp(0, a, 255)
 }
 
 /**
@@ -32,8 +36,4 @@ export function and(...checks: boolean[]) {
  */
 export function or(...checks: boolean[]) {
   return checks.some(b => b)
-}
-
-export function clampColor(number: number) {
-  return Math.min(255, Math.max(0, number))
 }

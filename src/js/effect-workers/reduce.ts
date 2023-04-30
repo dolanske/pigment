@@ -1,4 +1,4 @@
-import { and, compare, or, setRGB } from '../util'
+import { and, clamp, compare, or, setRGB } from '../util'
 
 onmessage = (event) => {
   const {
@@ -54,9 +54,9 @@ onmessage = (event) => {
     }
 
     // Calculate percentage
-    const percentage = Math.min(100, Math.max(0, Math.round((100 / expectedIterations) * i)))
+    const percentage = clamp(0, Math.round((100 / expectedIterations) * i), 100)
     if (percentage > currentPercentage) {
-      postMessage({ percentage })
+      postMessage({ progress: percentage })
       currentPercentage = percentage
     }
   }

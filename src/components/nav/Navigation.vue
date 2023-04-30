@@ -8,15 +8,23 @@ import {
 import { useCanvas } from '../../store/canvas'
 import { useFile } from '../../store/file'
 import WithDropdown from '../generic/WithDropdown.vue'
-import { useEffects } from '../../store/effects'
+import { useLoading } from '../../store/loading'
 
 const file = useFile()
-const effects = useEffects()
+// const effects = useEffects()
 const canvas = useCanvas()
+const loading = useLoading()
 </script>
 
 <template>
   <header class="navigation" :style="{ height: `${canvas.cfg.offsetTop}px` }">
+    <div class="progress-bar-wrap" :class="{ 'is-active': loading.progress }">
+      <div
+        class="progress-bar"
+        :style="{ width: `${loading.progress}%` }"
+      />
+    </div>
+
     <div class="nav-logo">
       <img src="/logo/logo.svg" alt="">
     </div>
@@ -40,6 +48,10 @@ const canvas = useCanvas()
         </button>
         <button class="button" @click="file.export()">
           Save As
+        </button>
+        <hr>
+        <button class="button">
+          Clear
         </button>
       </WithDropdown>
       <button class="button btn-white">

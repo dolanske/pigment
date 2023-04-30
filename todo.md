@@ -2,7 +2,7 @@
 
 - [Effects] [] Review if the order of applied effects has any different end results
 - [Effects] [] Tweak min & max values to not make the image disappear etc
-## Implementation
+- [Effects] [] Preset system 
 
 - [Canvas] [] Option to compare original picture with current picture
   - Side by side
@@ -40,6 +40,8 @@
 ## Bugs
 
 - [] Image dragged in takes full size instead of being calculated correctly (smaller images tha canvas should not get up-sized)
+- [] Noise is not being applied
+- [] 
 
 ---
 

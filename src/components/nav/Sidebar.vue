@@ -12,15 +12,15 @@ const effects = useEffects()
 <template>
   <aside class="sidebar" :style="{ height: `calc(100vh - ${canvas.cfg.offsetTop}px)` }">
     <div class="sidebar-tabs">
+      <!-- :class="[tab.id === effects.activeTab ? 'btn-gray' : 'btn-white']" -->
       <button
         v-for="tab in tabs"
         :key="tab.id"
-        :class="[tab.id === effects.activeTab ? 'btn-gray' : 'btn-white']"
-        :data-title-bottom="tab.id"
         class="button btn-tab"
+        :class="{ 'is-active': tab.id === effects.activeTab }"
         @click="effects.$patch({ activeTab: tab.id })"
       >
-        <component :is="tab.icon" />
+        <!-- <component :is="tab.icon" /> -->
         {{ tab.id }}
       </button>
     </div>

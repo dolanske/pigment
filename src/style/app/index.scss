@@ -17,4 +17,9 @@
     width: 100%;
     flex: 1;
   }
+
+  aside,
+  header {
+    background-color: var(--color-bg-light);
+  }
 }

@@ -1,4 +1,4 @@
-import { rndMinMax, setRGB } from '../util'
+import { clamp, rndMinMax, setRGB } from '../util'
 
 onmessage = (e: MessageEvent) => {
   const {
@@ -12,7 +12,9 @@ onmessage = (e: MessageEvent) => {
   } = e.data
   const transformed = new ImageData(imageData.width, imageData.height)
 
-  console.log(imageData.data.length / 4)
+  // Prepare to track loading progress
+  const expectedIterations = imageData.data.length
+  let currentPercentage = 0
 
   for (let i = 0; i < imageData.data.length; i += 4) {
     const [r, g, b, a] = imageData.data.slice(i, i + 4)
@@ -45,9 +47,14 @@ onmessage = (e: MessageEvent) => {
       randomG,
       randomB,
       a)
-  }
 
-  console.log('completed')
+    // Calculate iteration percentage and post a message
+    const percentage = clamp(0, Math.round((100 / expectedIterations) * i), 100)
+    if (percentage > currentPercentage) {
+      postMessage({ progress: percentage })
+      currentPercentage = percentage
+    }
+  }
 
   postMessage({ transformed })
 }

@@ -1,11 +1,35 @@
+// Height is set by the canvas configuration
 .navigation {
   @include flex(10px);
   width: 100%;
-  // Height is set by the canvas configuration
-  // height: 50px;
   border-bottom: 1px solid var(--color-border);
   padding: 0 var(--padding);
   padding-left: 15px;
+  position: relative;
+
+  .progress-bar-wrap {
+    @include t();
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+
+    .progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      background-color: var(--color-secondary);
+    }
+
+    &.is-active {
+      height: 1px;
+      opacity: 1;
+    }
+  }
 
   .nav-logo {
     img {
@@ -18,10 +42,11 @@
     height: 100%;
 
     &.fixed {
-      @include flex(0, space-between);
-      width: 241px;
+      // @include flex(0, space-between);
+      // width: 241px;
 
       .button {
+        @include font(400);
         color: var(--color-text-light);
 
         &:hover {
@@ -40,15 +65,6 @@
       svg {
         color: var(--color-accent);
       }
-      // &:after {
-      //   content: "";
-      //   position: absolute;
-      //   bottom: -9px;
-      //   height: 1px;
-      //   left: 0;
-      //   right: 0;
-      //   background-color: var(--color-border);
-      // }
     }
   }
 

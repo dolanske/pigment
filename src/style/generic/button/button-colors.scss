@@ -17,6 +17,20 @@
     }
   }
 
+  &.btn-gray-light {
+    background-color: var(--color-bg-light-hover);
+    color: var(--color-text);
+
+    svg {
+      color: var(--color-text);
+    }
+
+    &:focus-visible,
+    &:hover {
+      background-color: var(--color-bg-light-hover-2);
+    }
+  }
+
   &.btn-accent {
     background-color: var(--color-accent-bg);
     color: var(--color-text);
