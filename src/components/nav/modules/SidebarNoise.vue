@@ -4,7 +4,7 @@ import { watchDebounced } from '@vueuse/core'
 import InputSelect from '../../form/InputSelect.vue'
 import InputCheckbox from '../../form/InputCheckbox.vue'
 import { useFile } from '../../../store/file'
-import { addNoise } from '../../../js/effects'
+import { addNoise, degradeQuality } from '../../../js/effects'
 import { getCanvasContext } from '../../../store/canvas'
 
 const noiseType = ref('random')
@@ -120,6 +120,60 @@ function applyNoise() {
       }
     })
 }
+
+/**
+ * Quality reducer
+ *
+ * TODO: add option to run before / after effects
+ */
+
+const repetitions = ref(1)
+const qualityAmount = ref(100)
+
+watchDebounced([qualityAmount, repetitions], applyReduction, { debounce: 300 })
+
+function resetQuality() {
+  repetitions.value = 1
+  qualityAmount.value = 100
+
+  file.revert()
+}
+
+function applyReduction() {
+  if ((repetitions.value === 1 && qualityAmount.value === 100) || qualityAmount.value === 100)
+    return
+
+  // Copy start: `applyNoise`
+  const ctx = getCanvasContext()
+  const tempCanvas = document.createElement('canvas')
+  const tempContext = tempCanvas.getContext('2d')
+  if (!tempContext || !file.originalImg || !ctx || !file.img)
+    return
+
+  const { naturalWidth, naturalHeight } = file.originalImg
+
+  tempCanvas.width = naturalWidth
+  tempCanvas.height = naturalHeight
+  tempContext.drawImage(file.originalImg, 0, 0, naturalWidth, naturalHeight)
+
+  const tempData = tempContext.getImageData(0, 0, naturalWidth, naturalHeight)
+  // Copy end: `applyNoise`
+
+  degradeQuality(tempData, qualityAmount.value, repetitions.value)
+    .then((data) => {
+      tempContext.putImageData(data, 0, 0)
+      const url = tempCanvas.toDataURL()
+
+      if (file.img) {
+        console.log('here', url)
+
+        file.img.src = url
+        file.img.onload = () => {
+          file.draw()
+        }
+      }
+    })
+}
 </script>
 
 <template>
@@ -149,6 +203,34 @@ function applyNoise() {
       <button class="button btn-gray-light w-100 btn-tall" @click="applyNoise">
         Apply
       </button>
+    </div>
+  </div>
+  <hr>
+  <div class="sidebar-section">
+    <div class="section-title">
+      <strong>Quality Reducer</strong>
+    </div>
+
+    <div class="filter-inputs noise">
+      <div class="quality-wrap">
+        <input
+          v-model.number="qualityAmount"
+          type="range"
+          min="0"
+          max="100"
+        >
+        <span>{{ qualityAmount }}%</span>
+      </div>
+      <div class="flex">
+        <label>Repetitions</label>
+        <input v-model="repetitions" type="number">
+
+        <div class="flex-1" />
+
+        <button v-if="repetitions > 1 || qualityAmount < 100" class="button btn-white" @click="resetQuality()">
+          Reset
+        </button>
+      </div>
     </div>
   </div>
 </template>

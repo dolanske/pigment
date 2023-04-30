@@ -30,7 +30,7 @@ const rotation = computed({
       <input v-model="rotation" type="number">
     </div>
   </div>
-
+  <hr>
   <div class="sidebar-section">
     <div class="section-title">
       <strong>Flip</strong>

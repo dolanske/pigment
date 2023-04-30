@@ -67,7 +67,7 @@ export async function degradeQuality(data: ImageData, quality: number, repetitio
   // Run degrataion once
   let degradedData = await performDegradation(data, quality)
 
-  if (repetitions <= 1)
+  if (repetitions === 1)
     return degradedData
 
   // Recursive run with the previous image data
@@ -81,26 +81,33 @@ export async function degradeQuality(data: ImageData, quality: number, repetitio
 // Instead we could create them in the `defradeQualit` function above and simply
 // pass them into this function.
 // Could potentially improve performance if we run the following function 50 times
+
 function performDegradation(data: ImageData, quality: number): Promise<ImageData> {
   return new Promise((resolve, reject) => {
     // Clamp quality to the allowed range between 0 and 100
     quality = clamp(0, quality, 100)
+
+    console.log(quality)
+
     const canvas = document.createElement('canvas')
     canvas.width = data.width
     canvas.height = data.height
+
     const ctx = canvas.getContext('2d')
 
     if (ctx) {
-      ctx.putImageData(data, data.width, data.height)
+      ctx.putImageData(data, 0, 0)
       // Export data s jpeg with the provided quality (or degradation :)
       const source = canvas.toDataURL('image/jpeg', quality / 100)
       const image = new Image()
       image.src = source
+
       image.onload = () => {
         // Save to canvas and get data back
-        ctx.drawImage(image, data.width, data.height)
+        ctx.drawImage(image, 0, 0, data.width, data.height)
         resolve(ctx.getImageData(0, 0, data.width, data.height))
       }
+
       image.onerror = () => reject(new Error('Failed to load updated image'))
     }
   })

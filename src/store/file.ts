@@ -194,22 +194,25 @@ export const useFile = defineStore('file', () => {
    */
   function revert() {
     const ctx = getCanvasContext()
-    if (!ctx || !img.value)
+    if (!ctx || !img.value || !originalImg.value)
       return
 
     // Reset any changes made and re-append image
     const effects = useEffects()
     effects.reset()
 
-    const { width, height } = defaultScale()
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.drawImage(
-      img.value,
-      (ctx.canvas.width / 2) - (width / 2),
-      (ctx.canvas.height / 2) - (height / 2),
-      width,
-      height,
-    )
+    // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+    img.value.src = originalImg.value.src
+
+    img.value.onload = () => draw()
+
+    // ctx.drawImage(
+    //   originalImg.value,
+    //   (ctx.canvas.width / 2) - (width / 2),
+    //   (ctx.canvas.height / 2) - (height / 2),
+    //   width,
+    //   height,
+    // )
   }
 
   /**
