@@ -15,14 +15,10 @@ export const useCanvas = defineStore('canvas', () => {
     offsetLeft: 324,
   })
 
-  const center = reactive({
-    x: 0,
-    y: 0,
-  })
+  const center = reactive({ x: 0, y: 0 })
 
   return {
     cfg,
-    // scale,
     center,
   }
 })

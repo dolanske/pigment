@@ -14,6 +14,8 @@ const noiseAmount = ref<number>(0)
 const beforeNoiseEl = ref<HTMLCanvasElement>()
 const afterNoiseEl = ref<HTMLCanvasElement>()
 
+const previewSize = 161
+
 const options = {
   gaussian: 'Gaussian',
   random: 'Randomized',
@@ -40,8 +42,15 @@ onMounted(() => {
 const file = useFile()
 
 async function updatePreview() {
-  if (!file.img)
+  // If preview is updated and no image file exists, reset to defaults
+  if (!file.img) {
+    beforeCtx.clearRect(0, 0, previewSize, previewSize)
+    afterCtx.clearRect(0, 0, previewSize, previewSize)
+    noiseAmount.value = 0
+    noiseGrayscale.value = false
+    noiseType.value = 'random'
     return
+  }
 
   const { width, height } = file.defaultScale(file.img, beforeCtx)
 
@@ -111,16 +120,14 @@ function applyNoise() {
       }
     })
 }
-
-const canvasSize = 161
 </script>
 
 <template>
   <div class="sidebar-section">
     <div class="noise-preview">
       <span v-if="!file.img">Upload an image to see noise preview.</span>
-      <canvas id="before" ref="beforeNoiseEl" :width="canvasSize" :height="canvasSize" />
-      <canvas id="after" ref="afterNoiseEl" :width="canvasSize" :height="canvasSize" />
+      <canvas id="before" ref="beforeNoiseEl" :width="previewSize" :height="previewSize" />
+      <canvas id="after" ref="afterNoiseEl" :width="previewSize" :height="previewSize" />
     </div>
 
     <div class="noise-properties">

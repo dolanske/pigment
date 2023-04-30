@@ -5,15 +5,38 @@ import {
   IconZoomIn,
   IconZoomOut,
 } from '@iconify-prerendered/vue-mdi'
-import { useCanvas } from '../../store/canvas'
+import { getCanvasContext, useCanvas } from '../../store/canvas'
 import { useFile } from '../../store/file'
 import WithDropdown from '../generic/WithDropdown.vue'
 import { useLoading } from '../../store/loading'
+import { useEffects } from '../../store/effects'
 
 const file = useFile()
-// const effects = useEffects()
+const effects = useEffects()
 const canvas = useCanvas()
 const loading = useLoading()
+
+function resetApp() {
+  // Reset file
+  file.img = undefined
+  file.originalImg = undefined
+  file.currentScale.width = 0
+  file.currentScale.height = 0
+  file.rotation = 0
+  file.transformScale.horizontal = 1
+  file.transformScale.vertical = 1
+  file.transformScale.zoom = 1
+
+  // Reset effects
+  effects.reset()
+
+  canvas.center.x = 0
+  canvas.center.y = 0
+
+  const ctx = getCanvasContext()
+  if (ctx)
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+}
 </script>
 
 <template>
@@ -50,11 +73,11 @@ const loading = useLoading()
           Save As
         </button>
         <hr>
-        <button class="button">
+        <button class="button" @click="resetApp()">
           Clear
         </button>
       </WithDropdown>
-      <button class="button btn-white">
+      <!-- <button class="button btn-white">
         EDIT
       </button>
       <button class="button btn-white">
@@ -62,7 +85,7 @@ const loading = useLoading()
       </button>
       <button class="button btn-white">
         HELP
-      </button>
+      </button> -->
     </div>
 
     <!-- <div class="divider" />
