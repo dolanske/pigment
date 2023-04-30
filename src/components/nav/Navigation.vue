@@ -63,7 +63,7 @@ function resetApp() {
           New File
         </button>
         <button class="button" @click="file.revert()">
-          Undo all changes
+          Undo All Actions
         </button>
         <hr>
         <button class="button" @click="file.export()">
