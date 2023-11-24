@@ -17,7 +17,7 @@ function sendErrorMessage(event: ErrorEvent) {
   const toast = useToast()
   toast.push({
     type: 'error',
-    message: event.message,
+    message: event?.message ?? 'Idk err',
   })
 }
 
@@ -105,7 +105,7 @@ export const useFile = defineStore('file', () => {
     }
 
     img.value = image
-    originalImg.value = image
+    originalImg.value = image.cloneNode(true) as HTMLImageElement
     draw()
   }
 
@@ -228,12 +228,10 @@ export const useFile = defineStore('file', () => {
       return
 
     // Reset any changes made and re-append image
-    const effects = useEffects()
-    effects.reset()
+    useEffects().reset()
+    useHistory().reset()
 
-    // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     img.value.src = originalImg.value.src
-
     img.value.onload = () => draw()
 
     // ctx.drawImage(
