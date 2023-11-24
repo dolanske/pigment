@@ -3,6 +3,9 @@ import { computed } from 'vue'
 import { IconRefresh } from '@iconify-prerendered/vue-mdi'
 import type { EffectDefinition } from '../../../store/effects'
 import { effectDefinitions, useEffects } from '../../../store/effects'
+import { debounce } from '../../../js/util'
+import { UpdateType, useHistory } from '../../../store/history'
+import { useFile } from '../../../store/file'
 
 const props = defineProps<{
   data: EffectDefinition
@@ -10,10 +13,25 @@ const props = defineProps<{
 }>()
 
 const effects = useEffects()
+const file = useFile()
+const history = useHistory()
 
 const effectValue = computed({
   get: () => effects.state[props.id].value,
-  set: value => effects.state[props.id].value = value,
+  set: debounce((value: number) => {
+    effects.state[props.id].value = value
+
+    file.afterDraw((imageData) => {
+      history.add({
+        imageData,
+        type: UpdateType.FILTER,
+        payload: {
+          key: props.id,
+          value,
+        },
+      })
+    })
+  }, 100),
 })
 
 function reset() {

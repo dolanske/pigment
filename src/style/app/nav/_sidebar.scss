@@ -5,6 +5,14 @@
   // padding: 0 0 10px;
   padding-bottom: 10px;
 
+  hr {
+    display: block;
+    width: 100%;
+    border: none;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
   .sidebar-tabs {
     @include grid(0, 3);
     margin-bottom: 20px;
@@ -62,7 +70,9 @@
   .sidebar-section {
     display: block;
     width: 100%;
-    margin-bottom: 30px;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 20px;
   }
 
   .filter-inputs {
@@ -95,16 +105,12 @@
         height: 15px;
         cursor: pointer;
         border: none;
-        // border: none;
-        // transform: scale(1);
         background-color: var(--color-border-light);
         background: var(--color-border-light);
       }
 
       &::-moz-range-track,
       &::-webkit-slider-runnable-track {
-        // height: 5px !important;
-        // width: 100%;
         background-color: var(--color-border);
         background: var(--color-border);
         border-color: var(--color-border-light);

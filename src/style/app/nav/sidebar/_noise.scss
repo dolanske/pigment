@@ -38,4 +38,14 @@
     padding: 0 var(--padding);
     margin-bottom: 20px;
   }
+
+  .quality-wrap {
+    @include grid(10px, 1fr 32px);
+    align-items: center;
+
+    span {
+      text-align: right;
+      font-size: 1.2rem;
+    }
+  }
 }

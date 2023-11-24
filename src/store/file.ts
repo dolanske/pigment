@@ -5,6 +5,9 @@ import { useToast } from './toast'
 import { getCanvasContext } from './canvas'
 import { useLoading } from './loading'
 import { useEffects } from './effects'
+import { useHistory } from './history'
+
+type AfterDrawCallback = (imgData: ImageData) => void
 
 /**
  * Triggers an input element to upload an image and returns the image url
@@ -14,7 +17,7 @@ function sendErrorMessage(event: ErrorEvent) {
   const toast = useToast()
   toast.push({
     type: 'error',
-    message: event.message,
+    message: event?.message ?? 'Idk err',
   })
 }
 
@@ -37,7 +40,6 @@ export function triggerUpload(): Promise<HTMLImageElement> {
       const url = URL.createObjectURL(file)
       const image = new Image()
       image.src = url
-
       image.addEventListener('load', () => {
         return resolve(image)
       })
@@ -80,22 +82,42 @@ export const useFile = defineStore('file', () => {
   })
 
   async function upload() {
-    const { add, del } = useLoading()
-    add(LOAD.upload)
+    const loading = useLoading()
+    useEffects().reset()
+    useHistory().reset()
+
+    loading.add(LOAD.upload)
     triggerUpload()
       .then(update)
       .finally(() => {
-        del(LOAD.upload)
+        loading.del(LOAD.upload)
       })
   }
 
-  async function update(image: HTMLImageElement) {
+  async function update(image: HTMLImageElement | ImageData) {
+    if (image instanceof ImageData) {
+      const ctx = getCanvasContext()
+      if (!ctx)
+        return
+
+      ctx?.putImageData(image, 0, 0)
+      return
+    }
+
     img.value = image
-    originalImg.value = image
+    originalImg.value = image.cloneNode(true) as HTMLImageElement
     draw()
   }
 
+  // Redraw on every canvas transform
   watch(() => transformScale.zoom, draw)
+
+  // Lifecycle method. Called after next canvas draw
+  // Methods are only called once and then removed
+  const afterDrawCollector = new Set<AfterDrawCallback>()
+  function afterDraw(fn: AfterDrawCallback) {
+    afterDrawCollector.add(fn)
+  }
 
   // Main draw function
   // Before drawing, applies all canvas effects
@@ -128,6 +150,14 @@ export const useFile = defineStore('file', () => {
       transformedImageWidth * transformScale.zoom,
       transformedImageHeight * transformScale.zoom,
     )
+
+    const imageData = ctx.getImageData(0, 0, width, height)
+
+    // Run lifecycle
+    for (const entry of afterDrawCollector.values()) {
+      entry(imageData)
+      afterDrawCollector.delete(entry)
+    }
 
     // ctx.setTransform(1, 0, 0, 1, 0, 0)
   }
@@ -194,22 +224,23 @@ export const useFile = defineStore('file', () => {
    */
   function revert() {
     const ctx = getCanvasContext()
-    if (!ctx || !img.value)
+    if (!ctx || !img.value || !originalImg.value)
       return
 
     // Reset any changes made and re-append image
-    const effects = useEffects()
-    effects.reset()
+    useEffects().reset()
+    useHistory().reset()
 
-    const { width, height } = defaultScale()
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-    ctx.drawImage(
-      img.value,
-      (ctx.canvas.width / 2) - (width / 2),
-      (ctx.canvas.height / 2) - (height / 2),
-      width,
-      height,
-    )
+    img.value.src = originalImg.value.src
+    img.value.onload = () => draw()
+
+    // ctx.drawImage(
+    //   originalImg.value,
+    //   (ctx.canvas.width / 2) - (width / 2),
+    //   (ctx.canvas.height / 2) - (height / 2),
+    //   width,
+    //   height,
+    // )
   }
 
   /**
@@ -225,7 +256,7 @@ export const useFile = defineStore('file', () => {
    * Once zooming in is supported, it should first fit image into canvas
    *
    */
-  function exportFile() {
+  function exportFile(exportAs = false) {
     const ctx = getCanvasContext()
     if (!ctx || !img.value)
       return
@@ -244,6 +275,8 @@ export const useFile = defineStore('file', () => {
     for (let i = 0; i < pixels.data.length; i += 4) {
       if (pixels.data[i + 3] !== 0) {
         x = (i / 4) % ctx.canvas.width
+        // ???
+        // It's been over 7 months since I wrote this, I have no idea what is it doing
         y = ~~((i / 4) / ctx.canvas.width)
 
         if (bounds.top === null)
@@ -269,7 +302,6 @@ export const useFile = defineStore('file', () => {
     const trimHeight = bounds.bottom - bounds.top
     const trimWidth = bounds.right - bounds.left
     const trimmed = ctx.getImageData(bounds.left, bounds.top, trimWidth, trimHeight)
-
     const tempCanvas = document.createElement('canvas')
     tempCanvas.width = trimWidth
     tempCanvas.height = trimHeight
@@ -279,11 +311,19 @@ export const useFile = defineStore('file', () => {
 
     tempCtx?.putImageData(trimmed, 0, 0)
 
-    const a = document.createElement('a')
-    a.href = tempCanvas.toDataURL('image/jpeg', 0)
-    a.download = img.value.src.replace(/^.*[\\\/]/, '')
-    a.click()
-    a.remove()
+    if (exportAs) {
+      // Opens a save file prompt
+      // window.requestFile
+    }
+    else {
+      // Downloads it
+      const a = document.createElement('a')
+      a.href = tempCanvas.toDataURL('image/jpeg', 0)
+      a.download = img.value.src.replace(/^.*[\\\/]/, '')
+      a.click()
+      a.remove()
+    }
+
     del(LOAD.export)
   }
 
@@ -312,5 +352,6 @@ export const useFile = defineStore('file', () => {
     currentScale,
     defaultScale,
     transformScale,
+    afterDraw,
   }
 })
