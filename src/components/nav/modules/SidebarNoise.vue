@@ -8,12 +8,20 @@ import { addNoise, degradeQuality } from '../../../js/effects'
 import { getCanvasContext } from '../../../store/canvas'
 import { UpdateType, useHistory } from '../../../store/history'
 import { useEffects } from '../../../store/effects'
+import InputText from '../../form/InputText.vue'
+
+// TODO
+// Both noise and quality reducers should have an "apply" button at the bottom of the sidebar
+// When changes are applied, all their properties are set to default state
+// prevew should also show quality reductions in that case
 
 const history = useHistory()
 const effects = useEffects()
 
 const beforeNoiseEl = ref<HTMLCanvasElement>()
 const afterNoiseEl = ref<HTMLCanvasElement>()
+
+const drawing = ref(false)
 
 const previewSize = 161
 
@@ -63,14 +71,23 @@ async function updatePreview() {
     height * 4,
   )
 
-  setPreviewNoise()
+  setPreview()
 }
 
-async function setPreviewNoise() {
-  addNoise(
+async function setPreview() {
+  if (drawing.value)
+    return
+
+  const noiseResult = await addNoise(
     beforeCtx.getImageData(0, 0, afterCtx.canvas.width, afterCtx.canvas.height),
     effects.noise.amount,
     effects.noise.isGrayscale,
+  )
+
+  degradeQuality(
+    noiseResult,
+    effects.reduction.quality,
+    effects.reduction.repetitions,
   )
     .then((data) => {
       afterCtx.putImageData(data, 0, 0)
@@ -81,7 +98,11 @@ async function setPreviewNoise() {
 watch(() => file.img, updatePreview)
 
 // Update noise when slider changes
-watchDebounced(() => effects.noise.amount, setPreviewNoise, { debounce: 300 })
+watchDebounced(
+  [() => effects.noise, () => effects.reduction],
+  setPreview,
+  { debounce: 300, deep: true },
+)
 
 // When applying noise to the image, we don't want to perform filtering
 // at runtime. Most of these effects are very costly.
@@ -92,97 +113,51 @@ watchDebounced(() => effects.noise.amount, setPreviewNoise, { debounce: 300 })
 // noise and we run this effect again, it will add on top of it.
 // -
 // For that, when we click apply, we reference the original as the base
-
-function applyNoise() {
+async function apply() {
   const ctx = getCanvasContext()
   const tempCanvas = document.createElement('canvas')
   const tempContext = tempCanvas.getContext('2d')
-  if (!tempContext || !file.originalImg || !ctx || !file.img)
+
+  if (!tempContext || !file.img || !ctx || !file.img)
     return
 
-  const { naturalWidth, naturalHeight } = file.originalImg
-
+  drawing.value = true
+  // TODO g et width not from file.img but the image that is fitted onto screen (defaultScale)
+  const { naturalWidth, naturalHeight } = file.img
   tempCanvas.width = naturalWidth
   tempCanvas.height = naturalHeight
-  tempContext.drawImage(file.originalImg, 0, 0, naturalWidth, naturalHeight)
-
+  tempContext.drawImage(file.img, 0, 0, naturalWidth, naturalHeight)
   const tempData = tempContext.getImageData(0, 0, naturalWidth, naturalHeight)
 
-  addNoise(tempData, effects.noise.amount, effects.noise.isGrayscale)
+  const noiseResult = await addNoise(
+    tempData,
+    effects.noise.amount,
+    effects.noise.isGrayscale,
+  )
+
+  degradeQuality(
+    noiseResult,
+    effects.reduction.quality,
+    effects.reduction.repetitions,
+  )
     .then((imageData) => {
-      tempContext.putImageData(imageData, 0, 0)
-      const url = tempCanvas.toDataURL()
+      file.afterDraw(() => {
+        history.add({
+          imageData,
+          type: UpdateType.NOISE,
+          payload: {
+            amount: effects.noise.amount,
+            isGrayscale: effects.noise.isGrayscale,
+            type: effects.noise.type,
+            repetitions: effects.reduction.repetitions,
+            quality: effects.reduction.quality,
+          },
+        })
 
-      if (file.img) {
-        file.img.src = url
-        file.img.onload = () => {
-          file.draw()
-
-          history.add({
-            imageData,
-            type: UpdateType.NOISE,
-            payload: {
-              amount: effects.noise.amount,
-              isGrayscale: effects.noise.isGrayscale,
-              type: effects.noise.type,
-            },
-          })
-        }
-      }
-    })
-}
-
-/**
- * Quality reducer
- *
- * TODO: add option to run before / after effects
- */
-
-const repetitions = ref(1)
-const qualityAmount = ref(100)
-
-watchDebounced([qualityAmount, repetitions], applyReduction, { debounce: 300 })
-
-function resetQuality() {
-  repetitions.value = 1
-  qualityAmount.value = 100
-
-  file.revert()
-}
-
-function applyReduction() {
-  if ((repetitions.value === 1 && qualityAmount.value === 100) || qualityAmount.value === 100)
-    return
-
-  // Copy start: `applyNoise`
-  const ctx = getCanvasContext()
-  const tempCanvas = document.createElement('canvas')
-  const tempContext = tempCanvas.getContext('2d')
-  if (!tempContext || !file.originalImg || !ctx || !file.img)
-    return
-
-  const { naturalWidth, naturalHeight } = file.originalImg
-
-  tempCanvas.width = naturalWidth
-  tempCanvas.height = naturalHeight
-  tempContext.drawImage(file.originalImg, 0, 0, naturalWidth, naturalHeight)
-
-  const tempData = tempContext.getImageData(0, 0, naturalWidth, naturalHeight)
-  // Copy end: `applyNoise`
-
-  degradeQuality(tempData, qualityAmount.value, repetitions.value)
-    .then((data) => {
-      tempContext.putImageData(data, 0, 0)
-      const url = tempCanvas.toDataURL()
-
-      if (file.img) {
-        console.log('here', url)
-
-        file.img.src = url
-        file.img.onload = () => {
-          file.draw()
-        }
-      }
+        effects.resetNoise()
+        drawing.value = false
+      })
+      file.update(imageData)
     })
 }
 </script>
@@ -190,7 +165,7 @@ function applyReduction() {
 <template>
   <div class="sidebar-section">
     <div class="noise-preview">
-      <span v-if="!file.img">Upload an image to see noise preview.</span>
+      <span v-if="!file.img">Upload an image <br> to see the preview.</span>
       <canvas id="before" ref="beforeNoiseEl" :width="previewSize" :height="previewSize" />
       <canvas id="after" ref="afterNoiseEl" :width="previewSize" :height="previewSize" />
     </div>
@@ -207,13 +182,7 @@ function applyReduction() {
         min="0"
         max="100"
       >
-      <input v-model="effects.noise.amount" type="number">
-    </div>
-
-    <div class="section-title">
-      <button class="button btn-gray-light w-100 btn-tall" @click="applyNoise">
-        Apply
-      </button>
+      <InputText v-model="effects.noise.amount" type="number" />
     </div>
   </div>
   <hr>
@@ -225,23 +194,23 @@ function applyReduction() {
     <div class="filter-inputs noise">
       <div class="quality-wrap">
         <input
-          v-model.number="qualityAmount"
+          v-model.number="effects.reduction.quality"
           type="range"
           min="0"
           max="100"
         >
-        <span>{{ qualityAmount }}%</span>
+        <span>{{ effects.reduction.quality }}%</span>
       </div>
       <div class="flex">
         <label>Repetitions</label>
-        <input v-model="repetitions" type="number">
-
-        <div class="flex-1" />
-
-        <button v-if="repetitions > 1 || qualityAmount < 100" class="button btn-white" @click="resetQuality()">
-          Reset
-        </button>
+        <InputText v-model="effects.reduction.repetitions" type="number" />
       </div>
     </div>
+  </div>
+  <hr>
+  <div class="section-title">
+    <button class="button btn-gray-light w-100 btn-tall" @click="apply">
+      Apply Changes
+    </button>
   </div>
 </template>

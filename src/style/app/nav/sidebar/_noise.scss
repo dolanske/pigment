@@ -34,9 +34,15 @@
     }
   }
 
-  .filter-inputs.noise {
-    padding: 0 var(--padding);
-    margin-bottom: 20px;
+  .filter-inputs {
+    &.noise {
+      padding: 0 var(--padding);
+      margin-bottom: 20px;
+    }
+
+    .form-item {
+      display: inline-block;
+    }
   }
 
   .quality-wrap {

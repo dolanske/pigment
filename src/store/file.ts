@@ -88,25 +88,26 @@ export const useFile = defineStore('file', () => {
 
     loading.add(LOAD.upload)
     triggerUpload()
-      .then(update)
+      .then(setNewImage)
       .finally(() => {
         loading.del(LOAD.upload)
       })
   }
 
-  async function update(image: HTMLImageElement | ImageData) {
-    if (image instanceof ImageData) {
-      const ctx = getCanvasContext()
-      if (!ctx)
-        return
-
-      ctx?.putImageData(image, 0, 0)
-      return
-    }
-
+  async function setNewImage(image: HTMLImageElement | ImageData) {
     img.value = image
-    originalImg.value = image.cloneNode(true) as HTMLImageElement
+    originalImg.value = image.cloneNode() as HTMLImageElement
     draw()
+  }
+
+  function update(image: ImageData) {
+    const ctx = getCanvasContext()
+    if (!ctx)
+      return
+
+    ctx.putImageData(image, 0, 0)
+    img.value.src = ctx.canvas.toDataURL('image/png')
+    img.value.onload = draw
   }
 
   // Redraw on every canvas transform
@@ -340,6 +341,7 @@ export const useFile = defineStore('file', () => {
   return {
     upload,
     update,
+    setNewImage,
     rotate,
     flip,
     export: exportFile,

@@ -6,6 +6,7 @@ import { effectDefinitions, useEffects } from '../../../store/effects'
 import { debounce } from '../../../js/util'
 import { UpdateType, useHistory } from '../../../store/history'
 import { useFile } from '../../../store/file'
+import InputText from '../../form/InputText.vue'
 
 const props = defineProps<{
   data: EffectDefinition
@@ -57,7 +58,7 @@ function reset() {
         :min="effects.state[props.id].min"
         :max="effects.state[props.id].max"
       >
-      <input v-model="effectValue" type="number">
+      <InputText v-model="effectValue" type="number" />
     </div>
   </div>
 </template>

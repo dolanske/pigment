@@ -68,11 +68,11 @@ export const useHistory = defineStore('history', () => {
       }
 
       case UpdateType.NOISE: {
-        Object.assign(effects.noise, payload)
-        break
-      }
-
-      case UpdateType.TRANSFORM: {
+        effects.noise.amount = payload.amount
+        effects.noise.isGrayscale = payload.isGrayscale
+        effects.noise.type = payload.type
+        effects.noise.repetitions = payload.repetitions
+        effects.noise.quality = payload.quality
         break
       }
     }

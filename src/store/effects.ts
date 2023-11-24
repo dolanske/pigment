@@ -145,7 +145,16 @@ export const useEffects = defineStore('effects', () => {
     resetting.value = true
     for (const key of Object.keys(state))
       state[key].value = effectDefinitions[key].default
+    resetNoise()
     resetting.value = false
+  }
+
+  function resetNoise() {
+    effects.noise.amount = 0
+    effects.noise.isGrayscale = false
+    effects.noise.type = 'random'
+    effects.noise.repetitions = 1
+    effects.noise.quality = 100
   }
 
   watch(state, () => {
@@ -184,11 +193,19 @@ export const useEffects = defineStore('effects', () => {
     type: 'random',
   })
 
+  // Store information about quality reduction
+  const reduction = reactive({
+    repetitions: 1,
+    quality: 100,
+  })
+
   return {
     activeTab,
     state,
     reset,
     collectEffects,
     noise,
+    resetNoise,
+    reduction,
   }
 })

@@ -1,4 +1,5 @@
 <script setup lang='ts'>
+import { IconChevronDown, IconChevronUp } from '@iconify-prerendered/vue-mdi'
 import { computed, useAttrs } from 'vue'
 // import type { ErrorObject } from '@vuelidate/core'
 
@@ -26,6 +27,15 @@ const attrs = useAttrs()
   <div class="form-item" :class="[{ 'has-input': props.modelValue }, props.cls]">
     <label v-if="label">{{ label }}</label>
     <input v-model="value" type="text" v-bind="attrs">
+
+    <div v-if="attrs.type === 'number'" class="form-item-number-btns">
+      <button @click="value = Number(value) + 1">
+        <IconChevronUp />
+      </button>
+      <button @click="value = Number(value) - 1">
+        <IconChevronDown />
+      </button>
+    </div>
 
     <!-- <template v-if="hasErr">
       <p v-for="item in err" :key="item.$uid" class="form-error">

@@ -84,7 +84,7 @@ function handleDrop(e: any) {
   const img = new Image()
   img.src = url
   img.onload = () => {
-    file.update(img)
+    file.setNewImage(img)
     loading.del(LOAD.upload)
   }
 }

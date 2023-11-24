@@ -25,7 +25,7 @@ onClickOutside(wrap, () => open.value = false)
       <Component :is="props.icon" v-if="props.icon" />
       {{ text }}
     </button>
-    <div v-if="open" class="dropdown">
+    <div v-if="open" class="dropdown" @click="toggle()">
       <slot />
     </div>
   </div>
