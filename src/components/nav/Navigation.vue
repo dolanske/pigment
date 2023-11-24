@@ -10,11 +10,13 @@ import { useFile } from '../../store/file'
 import WithDropdown from '../generic/WithDropdown.vue'
 import { useLoading } from '../../store/loading'
 import { useEffects } from '../../store/effects'
+import { useHistory } from '../../store/history'
 
 const file = useFile()
 const effects = useEffects()
 const canvas = useCanvas()
 const loading = useLoading()
+const history = useHistory()
 
 function resetApp() {
   // Reset file
@@ -69,7 +71,7 @@ function resetApp() {
         <button class="button" @click="file.export()">
           Save
         </button>
-        <button class="button" @click="file.export()">
+        <button class="button" @click="file.export(true)">
           Save As
         </button>
         <hr>
@@ -116,11 +118,11 @@ function resetApp() {
         <IconZoomOut />
       </button>
 
-      <button class="button btn-white btn-icon" data-title-bottom="Undo">
+      <button class="button btn-white btn-icon" data-title-bottom="Undo" :disabled="!history.canUndo" @click="history.undo">
         <IconUndoVariant />
       </button>
 
-      <button class="button btn-white btn-icon" data-title-bottom="Redo">
+      <button class="button btn-white btn-icon" data-title-bottom="Redo" :disabled="!history.canRedo" @click="history.redo">
         <IconRedoVariant />
       </button>
     </div>

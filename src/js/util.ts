@@ -37,3 +37,22 @@ export function and(...checks: boolean[]) {
 export function or(...checks: boolean[]) {
   return checks.some(b => b)
 }
+
+/**
+ * @param {*} ctx The context
+ * @param {function} func The function to execute after the debounce time
+ * @param {number} delay The amount of time to wait
+ * @return {function} The debounced function
+ */
+export function debounce(func: (...arg: any[]) => void, delay: number) {
+  let timeout: NodeJS.Timeout
+
+  return (...arg: []) => {
+    if (timeout)
+      clearTimeout(timeout)
+
+    timeout = setTimeout(() => {
+      func(...arg)
+    }, delay)
+  }
+}

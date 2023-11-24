@@ -87,8 +87,6 @@ function performDegradation(data: ImageData, quality: number): Promise<ImageData
     // Clamp quality to the allowed range between 0 and 100
     quality = clamp(0, quality, 100)
 
-    console.log(quality)
-
     const canvas = document.createElement('canvas')
     canvas.width = data.width
     canvas.height = data.height
