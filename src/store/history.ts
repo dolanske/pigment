@@ -21,16 +21,11 @@ export enum UpdateType {
   NOISE,
 }
 
-interface UpdateEntry {
-  type: UpdateType
-  key: string
-  value: number
-}
-
 interface HistoryEntry {
   // Store the canvas
   imageData: ImageData
-  updates: UpdateEntry[]
+  type: UpdateType
+  payload: Record<string, any>
 }
 
 export const useHistory = defineStore('history', () => {
@@ -61,19 +56,24 @@ export const useHistory = defineStore('history', () => {
 
   function restore() {
     const savedEntry = entries.value[historyIndex.value]
-    const { imageData, updates } = savedEntry
+    const { imageData, type, payload } = savedEntry
 
     // First restore values to UI elements
-    for (const update of updates) {
-      switch (update.type) {
-        case UpdateType.FILTER: {
-          effects.state[update.key].value = update.value
-          break
-        }
+    // for (const update of updates) {
+    switch (type) {
+      // Payload is a key & value pair
+      case UpdateType.FILTER: {
+        effects.state[payload.key].value = payload.value
+        break
+      }
 
-        case UpdateType.NOISE: {
-          break
-        }
+      case UpdateType.NOISE: {
+        Object.assign(effects.noise, payload)
+        break
+      }
+
+      case UpdateType.TRANSFORM: {
+        break
       }
     }
 
@@ -98,6 +98,10 @@ export const useHistory = defineStore('history', () => {
     }
   }
 
+  function reset() {
+    entries.value = []
+  }
+
   return {
     add,
     undo,
@@ -106,5 +110,6 @@ export const useHistory = defineStore('history', () => {
     canUndo,
     canRedo,
     entries,
+    reset,
   }
 })

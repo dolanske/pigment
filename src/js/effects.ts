@@ -78,7 +78,7 @@ export async function degradeQuality(data: ImageData, quality: number, repetitio
 }
 
 // REVIEW This can be optimized if we don't create canvas & image on each run
-// Instead we could create them in the `defradeQualit` function above and simply
+// Instead we could create them in the `degradeQuality` function above and simply
 // pass them into this function.
 // Could potentially improve performance if we run the following function 50 times
 

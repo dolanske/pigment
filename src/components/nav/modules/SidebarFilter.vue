@@ -24,11 +24,11 @@ const effectValue = computed({
     file.afterDraw((imageData) => {
       history.add({
         imageData,
-        updates: [{
-          type: UpdateType.FILTER,
+        type: UpdateType.FILTER,
+        payload: {
           key: props.id,
           value,
-        }],
+        },
       })
     })
   }, 100),

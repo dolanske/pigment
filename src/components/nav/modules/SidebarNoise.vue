@@ -6,10 +6,11 @@ import InputCheckbox from '../../form/InputCheckbox.vue'
 import { useFile } from '../../../store/file'
 import { addNoise, degradeQuality } from '../../../js/effects'
 import { getCanvasContext } from '../../../store/canvas'
+import { UpdateType, useHistory } from '../../../store/history'
+import { useEffects } from '../../../store/effects'
 
-const noiseType = ref('random')
-const noiseGrayscale = ref(false)
-const noiseAmount = ref<number>(0)
+const history = useHistory()
+const effects = useEffects()
 
 const beforeNoiseEl = ref<HTMLCanvasElement>()
 const afterNoiseEl = ref<HTMLCanvasElement>()
@@ -46,9 +47,9 @@ async function updatePreview() {
   if (!file.img) {
     beforeCtx.clearRect(0, 0, previewSize, previewSize)
     afterCtx.clearRect(0, 0, previewSize, previewSize)
-    noiseAmount.value = 0
-    noiseGrayscale.value = false
-    noiseType.value = 'random'
+    effects.noise.amount = 0
+    effects.noise.isGrayscale = false
+    effects.noise.type = 'random'
     return
   }
 
@@ -68,8 +69,8 @@ async function updatePreview() {
 async function setPreviewNoise() {
   addNoise(
     beforeCtx.getImageData(0, 0, afterCtx.canvas.width, afterCtx.canvas.height),
-    noiseAmount.value,
-    noiseGrayscale.value,
+    effects.noise.amount,
+    effects.noise.isGrayscale,
   )
     .then((data) => {
       afterCtx.putImageData(data, 0, 0)
@@ -80,15 +81,15 @@ async function setPreviewNoise() {
 watch(() => file.img, updatePreview)
 
 // Update noise when slider changes
-watchDebounced(noiseAmount, setPreviewNoise, { debounce: 300 })
+watchDebounced(() => effects.noise.amount, setPreviewNoise, { debounce: 300 })
 
 // When applying noise to the image, we don't want to perform filtering
-// at runtime. Most of these effects are very cost.
+// at runtime. Most of these effects are very costly.
 // -
 // Instead we'll apply these to the file itself meaning that on
 // re-render with filters, these changes will always be present from now
 // on. Only issue that can arise are that if image already contains
-// noise and we run this effect again, it couold double it
+// noise and we run this effect again, it will add on top of it.
 // -
 // For that, when we click apply, we reference the original as the base
 
@@ -107,15 +108,25 @@ function applyNoise() {
 
   const tempData = tempContext.getImageData(0, 0, naturalWidth, naturalHeight)
 
-  addNoise(tempData, noiseAmount.value, noiseGrayscale.value)
-    .then((data) => {
-      tempContext.putImageData(data, 0, 0)
+  addNoise(tempData, effects.noise.amount, effects.noise.isGrayscale)
+    .then((imageData) => {
+      tempContext.putImageData(imageData, 0, 0)
       const url = tempCanvas.toDataURL()
 
       if (file.img) {
         file.img.src = url
         file.img.onload = () => {
           file.draw()
+
+          history.add({
+            imageData,
+            type: UpdateType.NOISE,
+            payload: {
+              amount: effects.noise.amount,
+              isGrayscale: effects.noise.isGrayscale,
+              type: effects.noise.type,
+            },
+          })
         }
       }
     })
@@ -185,18 +196,18 @@ function applyReduction() {
     </div>
 
     <div class="noise-properties">
-      <InputSelect v-model="noiseType" :options="options" cantclear :multiple="false" />
-      <InputCheckbox v-model="noiseGrayscale" reverse label="Grayscale" />
+      <InputSelect v-model="effects.noise.type" :options="options" cantclear :multiple="false" />
+      <InputCheckbox v-model="effects.noise.isGrayscale" reverse label="Grayscale" />
     </div>
 
     <div class="filter-inputs noise">
       <input
-        v-model.number="noiseAmount"
+        v-model.number="effects.noise.amount"
         type="range"
         min="0"
         max="100"
       >
-      <input v-model="noiseAmount" type="number">
+      <input v-model="effects.noise.amount" type="number">
     </div>
 
     <div class="section-title">

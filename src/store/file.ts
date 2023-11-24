@@ -5,6 +5,7 @@ import { useToast } from './toast'
 import { getCanvasContext } from './canvas'
 import { useLoading } from './loading'
 import { useEffects } from './effects'
+import { useHistory } from './history'
 
 type AfterDrawCallback = (imgData: ImageData) => void
 
@@ -81,12 +82,15 @@ export const useFile = defineStore('file', () => {
   })
 
   async function upload() {
-    const { add, del } = useLoading()
-    add(LOAD.upload)
+    const loading = useLoading()
+    useEffects().reset()
+    useHistory().reset()
+
+    loading.add(LOAD.upload)
     triggerUpload()
       .then(update)
       .finally(() => {
-        del(LOAD.upload)
+        loading.del(LOAD.upload)
       })
   }
 

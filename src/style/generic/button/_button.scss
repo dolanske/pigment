@@ -3,7 +3,7 @@
 
 .button {
   @include font(500);
-  @include t();
+  @include t(0.075);
   @include flex(5px, center);
   // border-radius: var(--radius-tn);
   height: 30px;
@@ -25,6 +25,7 @@
     opacity: 0.5;
   }
 
+  &.is-active,
   &:hover {
     color: var(--color-text);
     background-color: var(--color-bg-light-hover);

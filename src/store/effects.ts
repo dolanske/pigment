@@ -177,10 +177,18 @@ export const useEffects = defineStore('effects', () => {
   // Store active tab
   const activeTab = ref<string>(tabs[2].id)
 
+  // Store information related to noise
+  const noise = reactive({
+    amount: 0,
+    isGrayscale: false,
+    type: 'random',
+  })
+
   return {
     activeTab,
     state,
     reset,
     collectEffects,
+    noise,
   }
 })
