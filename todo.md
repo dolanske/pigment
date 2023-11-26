@@ -1,7 +1,11 @@
 # Todo
 
-- [Effects] [] Review if the order of applied effects has any different end results
-- [Effects] [] Tweak min & max values to not make the image disappear etc
+
+- [Refactor]
+- Make sure, that canvas is simply a projection of the `file.img`
+- Each time a destructive, non-filter change is added, the `file.img` is updated and then projected onto the canvas
+- We store x,y of the top left corner and width and height of the projected image at all times, instead of saving the entire canvas
+
 - [Effects] [] Preset system 
 
 - [Canvas] [] Option to compare original picture with current picture
@@ -15,7 +19,7 @@
 - [Effects>NoiseTab] [x] Add noise
   - [] gaussian noise
   - [] uniform noise
-  - [] fire out how to apply monochromatic noise
+  - [] figure out how to apply monochromatic noise
 - [Shortcuts] [] Copy implementation of keyboard shortcuts from orbit
   - Display keyboard shorcuts in buttons/tooltips for buttons
 - [Effects>Transform] [] Flip Horizontall / flip vertically
