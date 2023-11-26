@@ -141,6 +141,22 @@ export const useEffects = defineStore('effects', () => {
 
   const resetting = ref(false)
 
+  // Store active tab
+  const activeTab = ref<string>(tabs[2].id)
+
+  // Store information related to noise
+  const noise = reactive({
+    amount: 0,
+    isGrayscale: false,
+    type: 'random',
+  })
+
+  // Store information about quality reduction
+  const reduction = reactive({
+    repetitions: 1,
+    quality: 100,
+  })
+
   function reset() {
     resetting.value = true
     for (const key of Object.keys(state))
@@ -150,11 +166,11 @@ export const useEffects = defineStore('effects', () => {
   }
 
   function resetNoise() {
-    effects.noise.amount = 0
-    effects.noise.isGrayscale = false
-    effects.noise.type = 'random'
-    effects.noise.repetitions = 1
-    effects.noise.quality = 100
+    noise.amount = 0
+    noise.isGrayscale = false
+    noise.type = 'random'
+    reduction.repetitions = 1
+    reduction.quality = 100
   }
 
   watch(state, () => {
@@ -182,22 +198,6 @@ export const useEffects = defineStore('effects', () => {
     // In order to apply filter to canvas we need to re-draw the it
     file.draw()
   }
-
-  // Store active tab
-  const activeTab = ref<string>(tabs[2].id)
-
-  // Store information related to noise
-  const noise = reactive({
-    amount: 0,
-    isGrayscale: false,
-    type: 'random',
-  })
-
-  // Store information about quality reduction
-  const reduction = reactive({
-    repetitions: 1,
-    quality: 100,
-  })
 
   return {
     activeTab,

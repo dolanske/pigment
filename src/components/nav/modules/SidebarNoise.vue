@@ -117,26 +117,25 @@ async function apply() {
   const ctx = getCanvasContext()
   const tempCanvas = document.createElement('canvas')
   const tempContext = tempCanvas.getContext('2d')
-
-  if (!tempContext || !file.img || !ctx || !file.img)
+  if (!tempContext || !file.img || !ctx)
     return
 
   drawing.value = true
-  // TODO g et width not from file.img but the image that is fitted onto screen (defaultScale)
-  const { naturalWidth, naturalHeight } = file.img
-  tempCanvas.width = naturalWidth
-  tempCanvas.height = naturalHeight
-  tempContext.drawImage(file.img, 0, 0, naturalWidth, naturalHeight)
-  const tempData = tempContext.getImageData(0, 0, naturalWidth, naturalHeight)
 
-  const noiseResult = await addNoise(
-    tempData,
-    effects.noise.amount,
-    effects.noise.isGrayscale,
-  )
+  const { width, height } = file.defaultScale()
+  tempCanvas.width = width
+  tempCanvas.height = height
+  tempContext.drawImage(file.img, 0, 0, width, height)
+  const tempData = tempContext.getImageData(0, 0, width, height)
+
+  // const noiseResult = await addNoise(
+  //   tempData,
+  //   effects.noise.amount,
+  //   effects.noise.isGrayscale,
+  // )
 
   degradeQuality(
-    noiseResult,
+    tempData,
     effects.reduction.quality,
     effects.reduction.repetitions,
   )
@@ -157,6 +156,7 @@ async function apply() {
         effects.resetNoise()
         drawing.value = false
       })
+
       file.update(imageData)
     })
 }

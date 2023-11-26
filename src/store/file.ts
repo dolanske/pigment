@@ -30,11 +30,11 @@ export function triggerUpload(): Promise<HTMLImageElement> {
 
     inputEl.addEventListener('input', (event) => {
       if (!event.target)
-        return reject(new Error('Missing event target'))
+        reject(new Error('Missing event target'))
 
       const files = (event.target as HTMLInputElement).files
       if (!files)
-        return reject(new Error('Missing file list'))
+        reject(new Error('Missing file list'))
 
       const file = files[0]
       const url = URL.createObjectURL(file)
@@ -45,13 +45,13 @@ export function triggerUpload(): Promise<HTMLImageElement> {
       })
       image.addEventListener('error', (e) => {
         sendErrorMessage(e)
-        return reject(new Error('Failed to upload image'))
+        reject(new Error('Failed to upload image'))
       })
     })
 
     inputEl.addEventListener('error', (e) => {
       sendErrorMessage(e)
-      return reject(new Error('Failed to upload image'))
+      reject(new Error('Failed to upload image'))
     })
   })
 
@@ -66,7 +66,6 @@ export function triggerUpload(): Promise<HTMLImageElement> {
  * Store module used to store information about file.
  */
 export const useFile = defineStore('file', () => {
-  // const canvas = ref<HTMLCanvasElement>()
   const img = ref<HTMLImageElement>()
   const originalImg = ref<HTMLImageElement>()
   const currentScale = reactive({
@@ -94,7 +93,10 @@ export const useFile = defineStore('file', () => {
       })
   }
 
-  async function setNewImage(image: HTMLImageElement | ImageData) {
+  async function setNewImage(image: HTMLImageElement) {
+    if (!image)
+      return
+
     img.value = image
     originalImg.value = image.cloneNode() as HTMLImageElement
     draw()
@@ -102,12 +104,12 @@ export const useFile = defineStore('file', () => {
 
   function update(image: ImageData) {
     const ctx = getCanvasContext()
-    if (!ctx)
-      return
+    if (!ctx || !img.value)
+      return console.warn('[file.update] Missing context or root image element')
 
     ctx.putImageData(image, 0, 0)
     img.value.src = ctx.canvas.toDataURL('image/png')
-    img.value.onload = draw
+    img.value.onload = () => draw()
   }
 
   // Redraw on every canvas transform
@@ -124,8 +126,9 @@ export const useFile = defineStore('file', () => {
   // Before drawing, applies all canvas effects
   function draw() {
     const ctx = getCanvasContext()
+
     if (!ctx || !img.value)
-      return
+      return console.warn('[file.draw] Missing context or root image element')
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
@@ -138,29 +141,35 @@ export const useFile = defineStore('file', () => {
 
     // Rotate image by setting scale
     ctx.scale(transformScale.horizontal, transformScale.vertical)
-    // ctx.rotate(rotation.value * Math.PI / 180)
 
     const transformedImageWidth = width * transformScale.horizontal
     const transformedImageHeight = height * transformScale.vertical
 
+    const transformedX = (ctx.canvas.width / 2) - (width / 2) * transformScale.zoom
+    const transformedY = (ctx.canvas.height / 2) - (height / 2) * transformScale.zoom
+
     // TODO: move in canvas can be done by manually setting canvas center and updating that later
     ctx.drawImage(
       img.value,
+      transformedX,
+      transformedY,
+      transformedImageWidth * transformScale.zoom,
+      transformedImageHeight * transformScale.zoom,
+    )
+
+    // Retrieve data back to make it available in lifecycle hooks
+    const imageData = ctx.getImageData(
       (ctx.canvas.width / 2) - (width / 2) * transformScale.zoom,
       (ctx.canvas.height / 2) - (height / 2) * transformScale.zoom,
       transformedImageWidth * transformScale.zoom,
       transformedImageHeight * transformScale.zoom,
     )
 
-    const imageData = ctx.getImageData(0, 0, width, height)
-
     // Run lifecycle
     for (const entry of afterDrawCollector.values()) {
       entry(imageData)
       afterDrawCollector.delete(entry)
     }
-
-    // ctx.setTransform(1, 0, 0, 1, 0, 0)
   }
 
   /**
@@ -198,7 +207,7 @@ export const useFile = defineStore('file', () => {
   function rotate(fn: ((rotation: number) => number) | number) {
     const ctx = getCanvasContext()
     if (!ctx)
-      return
+      return console.warn('[file.rotate] Missing context')
 
     rotation.value = typeof fn === 'number' ? fn : fn(rotation.value)
 
@@ -226,7 +235,7 @@ export const useFile = defineStore('file', () => {
   function revert() {
     const ctx = getCanvasContext()
     if (!ctx || !img.value || !originalImg.value)
-      return
+      return console.warn('[file.revert] Missing context, root image or orirignal image')
 
     // Reset any changes made and re-append image
     useEffects().reset()
@@ -260,7 +269,7 @@ export const useFile = defineStore('file', () => {
   function exportFile(exportAs = false) {
     const ctx = getCanvasContext()
     if (!ctx || !img.value)
-      return
+      return console.warn('[file.exportFile] Missing context and root image')
 
     const { add, del } = useLoading()
     add(LOAD.export)
